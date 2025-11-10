@@ -1,0 +1,52 @@
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1 class="mt-4 mb-2">Tìm Phòng</h1>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a href="#">Home</a></li>
+          <li class="breadcrumb-item active">Tìm Phòng</li>
+        </ol>
+      </div>
+    </div>
+  </div><!-- /.container-fluid -->
+</section>
+
+<section class="content">
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <form class="mb-4">
+        <div class="row">
+          <div class="col-md-3">
+            <label for="checkIn">Check-in</label>
+            <input type="date" id="checkIn" [(ngModel)]="checkIn" name="checkIn" class="form-control" />
+          </div>
+          <div class="col-md-3">
+            <label for="checkOut">Check-out</label>
+            <input type="date" id="checkOut" [(ngModel)]="checkOut" name="checkOut" class="form-control" />
+          </div>
+          <div class="col-md-3 mt-4">
+            <button type="button" class="btn btn-primary" (click)="search()">Tìm kiếm</button>
+          </div>
+        </div>
+      </form>
+      <dx-data-grid
+        [dataSource]="rooms"
+        [showBorders]="true"
+        [columnAutoWidth]="true"
+        (onSelectionChanged)="onSelectionChanged($event)">
+        <dxo-selection mode="multiple"></dxo-selection> <!-- Chọn nhiều -->
+        <dxi-column type="selection"></dxi-column> <!-- Checkbox -->
+        <dxi-column dataField="roomNumber" caption="Phòng"></dxi-column>
+        <dxi-column dataField="categoryName" caption="Hạng phòng"></dxi-column>
+        <dxi-column dataField="pricePerNight" caption="Giá mỗi đêm"></dxi-column>
+        <dxi-column dataField="status" caption="Trạng thái"></dxi-column>
+      </dx-data-grid>
+      <button class="btn btn-success mt-2" (click)="proceedToBooking()" [disabled]="selectedRooms.length === 0">Đặt phòng đã chọn</button>
+    </div>
+  </div>
+</div>
+</section>

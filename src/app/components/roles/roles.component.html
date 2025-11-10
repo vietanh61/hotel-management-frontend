@@ -1,0 +1,30 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <h2>Quản lý Vai trò</h2>
+      <dx-data-grid
+        id="gridContainer"
+        [dataSource]="roles"
+        [showBorders]="true"
+        [remoteOperations]="false"
+        [allowColumnReordering]="true"
+        [allowColumnResizing]="true"
+        [columnAutoWidth]="true"
+        (onRowInserted)="onRowInserted($event)"
+        (onRowUpdating)="onRowUpdating($event)"
+        (onRowRemoving)="onRowRemoving($event)">
+
+        <dxo-editing
+          mode="popup"
+          [allowUpdating]="true"
+          [allowDeleting]="true"
+          [allowAdding]="true">
+        </dxo-editing>
+
+        <dxi-column dataField="name" caption="Tên"></dxi-column>
+        <dxi-column dataField="description" caption="Mô tả"></dxi-column>
+
+      </dx-data-grid>
+    </div>
+  </div>
+</div>

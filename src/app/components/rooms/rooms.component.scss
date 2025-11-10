@@ -1,0 +1,10 @@
+/* src/app/components/room-categories/room-categories.component.scss */
+#gridContainer {
+  width: 100%;  // Responsive full width
+}
+
+@media (max-width: 768px) {
+  .dx-datagrid {
+    font-size: 12px;  // Adjust for mobile
+  }
+}
