@@ -120,16 +120,37 @@
                     <p>Khách sạn</p>
                     </a>
                 </li>
+<li class="nav-item">
+                    <a onclick="showLogoutModal()" class="nav-link"><!--active-->
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Khách sạn</p>
+                    </a>
+                </li>
+<li class="nav-item">
+              <a class="nav-link text-danger" (click)="showLogoutModal()">
+                <i class="nav-icon fas fa-sign-out-alt"></i>
+                <p>Đăng xuất</p>
+              </a>
+            </li>
                 </ul>
             </li>
             </ul>
         </nav>
         <!-- /.sidebar-menu -->
     </div>
+<!-- Modal xác nhận logout (DevExtreme Popup) -->
+  <dx-popup
+    [visible]="showModal"
+    title="Xác nhận đăng xuất"
+    [width]="300"
+    [height]="200"
+    [showCloseButton]="true"
+    (onHiding)="showModal = false">
+    <p>Bạn có chắc chắn muốn đăng xuất?</p>
+    <div class="d-flex justify-content-end mt-3">
+      <dx-button text="Hủy" (onClick)="showModal = false" class="me-2"></dx-button>
+      <dx-button text="Đồng ý" type="danger" (onClick)="confirmLogout()"></dx-button>
+    </div>
+  </dx-popup>
 </aside>
-    
-    
-    
 
-    
-    

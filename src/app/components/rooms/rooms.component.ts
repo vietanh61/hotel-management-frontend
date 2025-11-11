@@ -36,7 +36,7 @@ loadRooms() {
         this.rooms = response.data;
       } else {
         //alert(response.name);
-        this.toastr.error(response.name, 'Lỗi');
+        this.toastr.error(response.name, 'Thông báo');
       }
     });
   }
@@ -46,7 +46,7 @@ loadRoomCategories() {
         this.room_categories = response.data;
       } else {
         // alert(response.name);
-        this.toastr.error(response.name, 'Lỗi');
+        this.toastr.error(response.name, 'Thông báo');
       }
     });
   }
@@ -78,19 +78,19 @@ loadRoomStatuses() {
   onRowInserted(event: any) {
     if (!event.data.hotelId) {
       //alert('Vui lòng chọn khách sạn');
-      this.toastr.error('Vui lòng chọn khách sạn', 'Lỗi');
+      this.toastr.error('Vui lòng chọn khách sạn', 'Thông báo');
       event.cancel = true;
       return;
     }
     if (!event.data.categoryId) {
       //alert('Vui lòng chọn hạng phòng');
-      this.toastr.error('Vui lòng chọn hạng phòng', 'Lỗi');
+      this.toastr.error('Vui lòng chọn hạng phòng', 'Thông báo');
       event.cancel = true;
       return;
     }
     if (!event.data.statusId) {
       // alert('Vui lòng chọn trạng thái phòng');
-      this.toastr.error('Vui lòng chọn trạng thái phòng', 'Lỗi');
+      this.toastr.error('Vui lòng chọn trạng thái phòng', 'Thông báo');
       event.cancel = true;
       return;
     }
@@ -100,7 +100,7 @@ loadRoomStatuses() {
         this.loadRooms();
       } else {
         //alert('Lỗi: ' + response.name);
-        this.toastr.error(response.name, 'Lỗi');
+        this.toastr.error(response.name, 'Thông báo');
       }
     });
   }
@@ -109,19 +109,19 @@ loadRoomStatuses() {
     const updatedData = { ...event.oldData, ...event.newData };
     if (!updatedData.hotelId) {
       //alert('Vui lòng chọn khách sạn');
-      this.toastr.error('Vui lòng chọn khách sạn', 'Lỗi');
+      this.toastr.error('Vui lòng chọn khách sạn', 'Thông báo');
       event.cancel = true;
       return;
     }
     if (!updatedData.categoryId) {
       // alert('Vui lòng chọn hạng phòng');
-      this.toastr.error('Vui lòng chọn hạng phòng', 'Lỗi');
+      this.toastr.error('Vui lòng chọn hạng phòng', 'Thông báo');
       event.cancel = true;
       return;
     }
     if (!updatedData.statusId) {
       //alert('Vui lòng chọn trạng thái phòng');
-      this.toastr.error('Vui lòng chọn trạng thái phòng', 'Lỗi');
+      this.toastr.error('Vui lòng chọn trạng thái phòng', 'Thông báo');
       event.cancel = true;
       return;
     }
@@ -131,7 +131,7 @@ loadRoomStatuses() {
         this.loadRooms();
       } else {
         // alert('Lỗi: ' + response.name);
-        this.toastr.error(response.name, 'Lỗi');
+        this.toastr.error(response.name, 'Thông báo');
       }
     });
   }
@@ -142,7 +142,7 @@ loadRoomStatuses() {
         this.loadRooms();
       } else {
         // alert('Lỗi: ' + response.name);
-        this.toastr.error(response.name, 'Lỗi');
+        this.toastr.error(response.name, 'Thông báo');
       }
     });
   }

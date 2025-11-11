@@ -7,7 +7,8 @@ import { RoomCategoriesComponent } from './components/room-categories/room-categ
 import { RoomsComponent } from './components/rooms/rooms.component';
 import { LoginComponent } from './components/login/login.component';
 import { SearchComponent } from './components/search/search.component';
-
+import { CreateBookingComponent } from './components/create-booking/create-booking.component';
+import { AuthGuard } from './guards/auth.guard';  // Import guard
 
 
 const routes: Routes = [
@@ -15,13 +16,14 @@ const routes: Routes = [
     path: '',
     children: 
   [
-      { path: '', redirectTo: 'home', pathMatch: 'full' },
-      { path: 'hotels', component: HotelsComponent },
-      { path: 'roles', component: RolesComponent },
-      { path: 'users', component: UsersComponent },
-      { path: 'room-categories', component: RoomCategoriesComponent },
-      { path: 'rooms', component: RoomsComponent },
-      { path: 'search', component: SearchComponent },
+      { path: '', redirectTo: 'login', pathMatch: 'full' },
+      { path: 'hotels', component: HotelsComponent,canActivate: [AuthGuard] },
+      { path: 'roles', component: RolesComponent,canActivate: [AuthGuard] },
+      { path: 'users', component: UsersComponent,canActivate: [AuthGuard] },
+      { path: 'room-categories', component: RoomCategoriesComponent,canActivate: [AuthGuard] },
+      { path: 'rooms', component: RoomsComponent,canActivate: [AuthGuard] },
+      { path: 'search', component: SearchComponent,canActivate: [AuthGuard] },
+      { path: 'create-booking', component: CreateBookingComponent,canActivate: [AuthGuard] },
   ] 
   },
   {

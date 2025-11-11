@@ -1,0 +1,72 @@
+<!-- Frontend: src/app/components/create-booking/create-booking.component.html -->
+<div class="container mt-4">
+  <h2>Tạo Đặt Phòng</h2>
+  <!-- Master: Thông tin Booking -->
+  <form #bookingForm="ngForm">
+    <div class="row">
+      <!-- Tìm kiếm khách -->
+      <div class="col-md-12 mb-3">
+        <label>Tìm khách hàng</label>
+        <div class="input-group">
+          <input type="text" class="form-control" [(ngModel)]="searchQuery" name="searchQuery" placeholder="Tên, SĐT, Email">
+          <button class="btn btn-primary" (click)="searchCustomers()">Tìm</button>
+        </div>
+        <dx-list [dataSource]="customers" [showSelectionControls]="false" (onItemClick)="selectCustomer($event)">
+          <div *dxTemplate="let customer of 'item'">
+            {{ customer.fullName }} - {{ customer.phone }} - {{ customer.email }}
+          </div>
+        </dx-list>
+        <button class="btn btn-primary mt-2" (click)="openAddCustomerPopup()">Thêm khách mới</button>
+      </div>
+      <div class="col-md-6">
+        <label>Khách hàng</label>
+        <input type="text" class="form-control" [value]="selectedCustomer?.fullName" disabled>
+      </div>
+      <div class="col-md-6">
+        <label>Check-in</label>
+        <input type="date" class="form-control" [(ngModel)]="booking.checkIn" name="checkIn">
+      </div>
+      <div class="col-md-6">
+        <label>Check-out</label>
+        <input type="date" class="form-control" [(ngModel)]="booking.checkOut" name="checkOut">
+      </div>
+      <div class="col-md-6">
+        <label>Tổng tiền</label>
+        <input type="number" class="form-control" [value]="booking.totalPrice" disabled>
+      </div>
+      <div class="col-md-12">
+        <label>Ghi chú</label>
+        <textarea class="form-control" [(ngModel)]="booking.notes" name="notes"></textarea>
+      </div>
+    </div>
+  </form>
+
+  <!-- Detail: Thông tin phòng (DevExtreme Grid) -->
+  <dx-data-grid
+    [dataSource]="details"
+    [showBorders]="true"
+    [columnAutoWidth]="true"
+    (onContentReady)="calculateTotal()">
+    <dxi-column dataField="roomNumber" caption="Phòng"></dxi-column>
+    <dxi-column dataField="categoryName" caption="Hạng phòng"></dxi-column>
+    <dxi-column dataField="pricePerNight" caption="Giá/đêm"></dxi-column>
+    <dxi-column dataField="subtotal" caption="Tiểu tổng"></dxi-column>
+  </dx-data-grid>
+
+  <button class="btn btn-success mt-3" (click)="submitBooking()" [disabled]="!selectedCustomer || details.length === 0">Tạo Booking</button>
+
+  <!-- Popup thêm khách mới (DevExtreme Popup) -->
+  <dx-popup [visible]="showAddCustomer" title="Thêm khách mới" (onHiding)="showAddCustomer = false">
+    <form>
+      <dx-form [formData]="newCustomer">
+        <dxi-item dataField="fullName" [label]="{ text: 'Họ tên' }"></dxi-item>
+        <dxi-item dataField="email" [label]="{ text: 'Email' }"></dxi-item>
+        <dxi-item dataField="phone" [label]="{ text: 'SĐT' }"></dxi-item>
+        <dxi-item dataField="address" [label]="{ text: 'Địa chỉ' }"></dxi-item>
+        <dxi-item dataField="idNumber" [label]="{ text: 'CMND/Passport' }"></dxi-item>
+        <dxi-item dataField="notes" [label]="{ text: 'Ghi chú' }"></dxi-item>
+      </dx-form>
+      <button class="btn btn-primary" (click)="addNewCustomer()">Lưu</button>
+    </form>
+  </dx-popup>
+</div>

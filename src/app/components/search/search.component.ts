@@ -20,15 +20,15 @@ export class SearchComponent {
   search() {
     if (!this.checkIn || !this.checkOut || new Date(this.checkIn) >= new Date(this.checkOut)) {
       //alert('Vui lòng chọn ngày hợp lệ');
-      this.toastr.error('Vui lòng chọn ngày hợp lệ', 'Lỗi');
+      this.toastr.error('Vui lòng chọn ngày hợp lệ', 'Thông báo');
       return;
     }
-    this.searchService.searchAvailable(this.checkIn, this.checkOut).subscribe(response => {
+    this.searchService.searchAvailableRooms(this.checkIn, this.checkOut).subscribe(response => {
       if (response.code === 200) {
         this.rooms = response.data;
       } else {
         //alert(response.name);
-        this.toastr.error(response.name, 'Lỗi');
+        this.toastr.error(response.name, 'Thông báo');
       }
     });
   }

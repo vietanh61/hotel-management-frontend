@@ -7,10 +7,10 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class SearchService {
-  private apiUrl = `${environment.apiUrl}/search`;
+  private apiUrl = `${environment.apiUrl}/Search`;
   constructor(private http: HttpClient) { }
 
-  searchAvailable(checkIn: string, checkOut: string): Observable<any> {  // Date as string YYYY-MM-DD
+  searchAvailableRooms(checkIn: string, checkOut: string): Observable<any> {  // Date as string YYYY-MM-DD
     let params = new HttpParams()
       .set('checkIn', checkIn)
       .set('checkOut', checkOut);
