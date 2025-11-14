@@ -10,8 +10,8 @@ import { ToastrService } from 'ngx-toastr';  // Import Toastr
 })
 
 export class SearchComponent {
-  checkIn: string = '';  // YYYY-MM-DD
-  checkOut: string = '';
+  checkIn: string = new Date().toISOString().split('T')[0];  // Default hôm nay
+  checkOut: string = new Date(Date.now() + 86400000).toISOString().split('T')[0];  // Default mai
   rooms: any[] = [];
   selectedRooms: any[] = [];
 
@@ -26,6 +26,10 @@ export class SearchComponent {
     this.searchService.searchAvailableRooms(this.checkIn, this.checkOut).subscribe(response => {
       if (response.code === 200) {
         this.rooms = response.data;
+        if (!response.data || (Array.isArray(response.data) && response.data.length === 0)) {
+          this.toastr.warning("Hiện tại không còn phòng nào trống trong thời gian này.\nVui lòng chọn khoảng ngày khác.", 'Thông báo');  
+          return;
+        }
       } else {
         //alert(response.name);
         this.toastr.error(response.name, 'Thông báo');
@@ -38,7 +42,25 @@ export class SearchComponent {
   }
 
   proceedToBooking() {
-    // Navigate sang trang đặt phòng với selectedRooms
-    this.router.navigate(['/create-booking'], { state: { selectedRooms: this.selectedRooms, checkIn: this.checkIn, checkOut: this.checkOut } });
+    if (this.selectedRooms.length === 0) {
+      this.toastr.warning('Vui lòng chọn ít nhất một phòng', 'Cảnh báo');
+      return;
+    }
+    const state = {
+      selectedRooms: this.selectedRooms.map(room => ({
+        roomId: room.roomId,
+        roomNumber: room.roomNumber,
+        categoryName: room.categoryName,
+        pricePerNight: room.pricePerNight,
+        subtotal: 0,
+        quantity: room.quantity
+      })),
+      checkIn: this.checkIn,
+      checkOut: this.checkOut
+    };
+    // Lưu vào localStorage để persist qua reload
+    localStorage.setItem('bookingState', JSON.stringify(state));
+    this.router.navigate(['/create-booking'], { state });
   }
+
 }

@@ -4,7 +4,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { HotelsComponent } from './components/hotels/hotels.component';  // Thêm dòng này
-import { DxDataGridModule, DxButtonModule, DxPopupModule, DxTemplateModule, DxListModule, DxFormModule } from 'devextreme-angular';  // DevExtreme modules
+import { DevExtremeModule } from './devextreme.module'; // đường dẫn chỉnh cho đúng
 import { FormsModule } from '@angular/forms';
 import { RolesComponent } from './components/roles/roles.component';
 import { UsersComponent } from './components/users/users.component';
@@ -20,6 +20,7 @@ import { SearchComponent } from './components/search/search.component';
 import { CreateBookingComponent } from './components/create-booking/create-booking.component';  // Import here
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './interceptors/auth.interceptor';  // Add this import (adjust path if needed)
+import { BookingsComponent } from './components/bookings/bookings.component';
 
 @NgModule({
   declarations: [
@@ -34,18 +35,14 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';  // Add this 
     LoginComponent,
     RoomsComponent,
     SearchComponent,
-    CreateBookingComponent
+    CreateBookingComponent,
+    BookingsComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,  // Thêm vào đây
-    DxDataGridModule,
-    DxButtonModule,
-    DxPopupModule,
-    DxTemplateModule,
-    DxListModule,
-    DxFormModule,
+    DevExtremeModule,
     FormsModule,
     BrowserAnimationsModule,  // Add this for toastr animations
     ToastrModule.forRoot({    // Configure globally

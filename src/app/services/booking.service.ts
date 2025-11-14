@@ -13,10 +13,15 @@ export class BookingService {
 
   constructor(private http: HttpClient) { }
 
-  // ... các method khác
+  getBookings(): Observable<any> {  // Trả về ApiResponse từ HotelManagementApi
+    return this.http.get<any>(this.apiUrl);
+  }
 
-  createBookingWithDetails(booking: Booking, details: any[]): Observable<any> {
-    const payload = { booking, details };
+  getBooking(id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${id}`);
+  }
+
+  createBookingWithDetails(payload: { booking: Booking, details: any[] }): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/create-with-details`, payload);
   }
 }

@@ -1,72 +1,191 @@
-<!-- Frontend: src/app/components/create-booking/create-booking.component.html -->
 <div class="container mt-4">
-  <h2>Tạo Đặt Phòng</h2>
-  <!-- Master: Thông tin Booking -->
+  <h2>{{ bookingId ? 'Chi tiết Booking' : 'Tạo Đặt Phòng' }}</h2>
+  <!-- Master: Thông tin Booking và Khách -->
   <form #bookingForm="ngForm">
     <div class="row">
-      <!-- Tìm kiếm khách -->
-      <div class="col-md-12 mb-3">
-        <label>Tìm khách hàng</label>
-        <div class="input-group">
-          <input type="text" class="form-control" [(ngModel)]="searchQuery" name="searchQuery" placeholder="Tên, SĐT, Email">
-          <button class="btn btn-primary" (click)="searchCustomers()">Tìm</button>
-        </div>
-        <dx-list [dataSource]="customers" [showSelectionControls]="false" (onItemClick)="selectCustomer($event)">
-          <div *dxTemplate="let customer of 'item'">
-            {{ customer.fullName }} - {{ customer.phone }} - {{ customer.email }}
-          </div>
-        </dx-list>
-        <button class="btn btn-primary mt-2" (click)="openAddCustomerPopup()">Thêm khách mới</button>
+      <!-- Nút mở modal tìm khách (chỉ khi tạo mới) -->
+      <div class="col-md-12 mb-3" *ngIf="!bookingId">
+        <button class="btn btn-primary" (click)="openSearchCustomerModal()">Tìm khách hàng</button>
+        <button class="btn btn-primary ms-2" (click)="openAddCustomerPopup()">Thêm khách mới</button>
+      </div>
+      <!-- Thông tin khách (disabled khi chi tiết) -->
+      <div class="col-md-6">
+        <label>Họ tên</label>
+        <input type="text" class="form-control" [(ngModel)]="customerInfo.fullName" name="fullName" [disabled]="bookingId">
       </div>
       <div class="col-md-6">
-        <label>Khách hàng</label>
-        <input type="text" class="form-control" [value]="selectedCustomer?.fullName" disabled>
+        <label>Email</label>
+        <input type="email" class="form-control" [(ngModel)]="customerInfo.email" name="email" [disabled]="bookingId">
+      </div>
+      <div class="col-md-6">
+        <label>SĐT</label>
+        <input type="text" class="form-control" [(ngModel)]="customerInfo.phone" name="phone" [disabled]="bookingId">
+      </div>
+      <div class="col-md-6">
+        <label>Địa chỉ</label>
+        <input type="text" class="form-control" [(ngModel)]="customerInfo.address" name="address" [disabled]="bookingId">
+      </div>
+      <div class="col-md-6">
+        <label>CMND/Passport</label>
+        <input type="text" class="form-control" [(ngModel)]="customerInfo.idNumber" name="idNumber" [disabled]="bookingId">
+      </div>
+      <div class="col-md-6">
+        <label>Ghi chú khách</label>
+        <textarea class="form-control" [(ngModel)]="customerInfo.notes" name="customerNotes" [disabled]="bookingId"></textarea>
       </div>
       <div class="col-md-6">
         <label>Check-in</label>
-        <input type="date" class="form-control" [(ngModel)]="booking.checkIn" name="checkIn">
+        <input type="date" class="form-control" [(ngModel)]="booking.checkIn" name="checkIn" [disabled]="bookingId">
       </div>
       <div class="col-md-6">
         <label>Check-out</label>
-        <input type="date" class="form-control" [(ngModel)]="booking.checkOut" name="checkOut">
+        <input type="date" class="form-control" [(ngModel)]="booking.checkOut" name="checkOut" [disabled]="bookingId">
       </div>
       <div class="col-md-6">
         <label>Tổng tiền</label>
         <input type="number" class="form-control" [value]="booking.totalPrice" disabled>
       </div>
-      <div class="col-md-12">
-        <label>Ghi chú</label>
-        <textarea class="form-control" [(ngModel)]="booking.notes" name="notes"></textarea>
+      <div class="col-md-6">
+        <label>Ghi chú booking</label>
+        <textarea class="form-control" [(ngModel)]="booking.notes" name="notes" [disabled]="bookingId"></textarea>
+      </div>
+      <!-- Combobox Hình thức thanh toán và Trạng thái (editable khi chi tiết) -->
+      <div class="col-md-6" *ngIf="bookingId">
+        <label>Hình thức thanh toán</label>
+        <dx-select-box
+          [dataSource]="paymentMethods"
+          valueExpr="id"
+          displayExpr="name"
+          [(value)]="booking.paymentMethodId">
+        </dx-select-box>
+      </div>
+      <div class="col-md-6" *ngIf="bookingId">
+        <label>Trạng thái booking</label>
+        <dx-select-box
+          [dataSource]="bookingStatuses"
+          valueExpr="id"
+          displayExpr="name"
+          [(value)]="booking.statusId">
+        </dx-select-box>
       </div>
     </div>
   </form>
 
-  <!-- Detail: Thông tin phòng (DevExtreme Grid) -->
+  <!-- Detail: Thông tin phòng (DevExtreme Grid, editable quantity) -->
   <dx-data-grid
     [dataSource]="details"
     [showBorders]="true"
-    [columnAutoWidth]="true"
-    (onContentReady)="calculateTotal()">
-    <dxi-column dataField="roomNumber" caption="Phòng"></dxi-column>
-    <dxi-column dataField="categoryName" caption="Hạng phòng"></dxi-column>
-    <dxi-column dataField="pricePerNight" caption="Giá/đêm"></dxi-column>
-    <dxi-column dataField="subtotal" caption="Tiểu tổng"></dxi-column>
+    (onRowUpdated)="onRowUpdated($event)">
+    <dxo-editing mode="row" [allowUpdating]="!bookingId" [allowDeleting]="!bookingId"></dxo-editing>
+    <dxi-column dataField="roomNumber" caption="Phòng" [allowEditing]="false"></dxi-column>
+    <dxi-column dataField="categoryName" caption="Hạng phòng" [allowEditing]="false"></dxi-column>
+    <dxi-column dataField="pricePerNight" caption="Giá/đêm" [allowEditing]="false"></dxi-column>
+    <dxi-column dataField="quantity" caption="Số lượng" [allowEditing]="!bookingId"></dxi-column>
+    <dxi-column dataField="subtotal" caption="Tiểu tổng" [allowEditing]="false"></dxi-column>
+    <dxi-column caption="Hành động" [allowEditing]="false" [cellTemplate]="deleteTemplate" *ngIf="!bookingId"></dxi-column>
   </dx-data-grid>
+  <button 
+    class="btn btn-success mt-3" 
+    (click)="submitBooking()" 
+    [disabled]="!customerInfo.fullName || details.length === 0"><span *ngIf="!isLoading">Tạo Booking</span>
+    <span *ngIf="isLoading">
+      <i class="fa fa-spinner fa-spin me-2"></i> Đang xử lý...
+    </span>
 
-  <button class="btn btn-success mt-3" (click)="submitBooking()" [disabled]="!selectedCustomer || details.length === 0">Tạo Booking</button>
+  </button>
+  <!-- Overlay loading toàn trang -->
+  <div class="loading-overlay" *ngIf="isLoading">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Đang xử lý...</span>
+    </div>
+  </div>
+  <!-- Popup thêm khách mới -->
+   <dx-popup 
+    [visible]="showAddCustomer" 
+    title="Thêm khách mới" 
+    [width]="500"
+    [showCloseButton]="true"
+    [dragEnabled]="true"
+    [closeOnOutsideClick]="true"
+    (onHiding)="showAddCustomer = false">
 
-  <!-- Popup thêm khách mới (DevExtreme Popup) -->
-  <dx-popup [visible]="showAddCustomer" title="Thêm khách mới" (onHiding)="showAddCustomer = false">
-    <form>
-      <dx-form [formData]="newCustomer">
-        <dxi-item dataField="fullName" [label]="{ text: 'Họ tên' }"></dxi-item>
-        <dxi-item dataField="email" [label]="{ text: 'Email' }"></dxi-item>
-        <dxi-item dataField="phone" [label]="{ text: 'SĐT' }"></dxi-item>
-        <dxi-item dataField="address" [label]="{ text: 'Địa chỉ' }"></dxi-item>
-        <dxi-item dataField="idNumber" [label]="{ text: 'CMND/Passport' }"></dxi-item>
-        <dxi-item dataField="notes" [label]="{ text: 'Ghi chú' }"></dxi-item>
-      </dx-form>
-      <button class="btn btn-primary" (click)="addNewCustomer()">Lưu</button>
-    </form>
+    <div class="p-3">
+      <form #addCustomerForm="ngForm">
+        <div class="mb-3">
+          <label>Họ tên</label>
+          <input type="text" class="form-control" [(ngModel)]="newCustomer.fullName" name="fullName" required>
+        </div>
+
+        <div class="mb-3">
+          <label>Email</label>
+          <input type="email" class="form-control" [(ngModel)]="newCustomer.email" name="email">
+        </div>
+
+        <div class="mb-3">
+          <label>SĐT</label>
+          <input type="text" class="form-control" [(ngModel)]="newCustomer.phone" name="phone">
+        </div>
+
+        <div class="mb-3">
+          <label>Địa chỉ</label>
+          <input type="text" class="form-control" [(ngModel)]="newCustomer.address" name="address">
+        </div>
+
+        <div class="mb-3">
+          <label>CMND/Passport</label>
+          <input type="text" class="form-control" [(ngModel)]="newCustomer.idNumber" name="idNumber">
+        </div>
+
+        <div class="mb-3">
+          <label>Ghi chú</label>
+          <textarea class="form-control" [(ngModel)]="newCustomer.notes" name="notes"></textarea>
+        </div>
+
+        <div class="text-end">
+          <button type="button" class="btn btn-secondary me-2" (click)="showAddCustomer = false">Hủy</button>
+          <button type="button" class="btn btn-success" (click)="addNewCustomer()">Lưu</button>
+        </div>
+      </form>
+    </div>
   </dx-popup>
+
+  <!-- Popup tìm khách -->
+  <dx-popup [visible]="showSearchCustomer" title="Tìm khách hàng" (onHiding)="showSearchCustomer = false">
+    <div class="input-group mb-3">
+      <input type="text" class="form-control" [(ngModel)]="searchQuery" name="searchQuery" placeholder="Tên, SĐT, Email">
+      <button class="btn btn-primary" (click)="searchCustomers()">Tìm</button>
+    </div>
+    <dx-list [dataSource]="customers" [showSelectionControls]="false" (onItemClick)="selectCustomerFromModal($event)">
+      <div *dxTemplate="let customer of 'item'">
+        {{ customer.fullName }} - {{ customer.phone }} - {{ customer.email }}
+      </div>
+    </dx-list>
+  </dx-popup>
+
+  <!-- Popup thông báo ConfirmationNo sau tạo thành công -->
+  <dx-popup [(visible)]="showConfirmationModal" title="Tạo Booking Thành Công" [showCloseButton]="true" (onHiding)="closeConfirmationModal()">
+    <p>Số ConfirmationNo: {{ confirmationNo }}</p>
+    <div class="d-flex justify-content-end">
+      <dx-button text="Copy" (onClick)="copyConfirmationNo()"></dx-button>
+      <dx-button text="Đóng" type="default" (onClick)="closeConfirmationModal()"></dx-button>
+    </div>
+  </dx-popup>
+
+  <!-- Popup thông báo ConfirmationNo sau tạo thành công -->
+<dx-popup
+  [(visible)]="showConfirmationModal"
+  title="Tạo Booking Thành Công"
+  [width]="400"
+  [showCloseButton]="true"
+  [closeOnOutsideClick]="false"
+  (onShown)="onConfirmationPopupShown()"
+  (onHiding)="closeConfirmationModal()">
+  <div class="p-3">
+    <p>Số ConfirmationNo: <strong>{{ confirmationNo }}</strong></p>
+    <div class="d-flex justify-content-end">
+      <dx-button text="Copy" (onClick)="copyConfirmationNo()"></dx-button>
+      <dx-button text="Đóng" type="default" (onClick)="closeConfirmationModal()" class="ms-2"></dx-button>
+    </div>
+  </div>
+</dx-popup>
 </div>
