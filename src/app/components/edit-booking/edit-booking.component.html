@@ -1,5 +1,5 @@
 <div class="container mt-4">
-  <h2>Tạo Đặt Phòng</h2>
+  <h2>Chi tiết Đặt Phòng</h2>
   <!-- Master: Thông tin Booking và Khách -->
   <form #bookingForm="ngForm">
     <div class="row">
@@ -74,7 +74,7 @@
 
   <!-- Detail: Thông tin phòng (DevExtreme Grid, editable quantity) -->
   <dx-data-grid [dataSource]="details" [showBorders]="true" (onCellPrepared)="calculateSubtotalOnChange($event)">
-    <dxo-editing mode="cell" [allowUpdating]="true"></dxo-editing>
+    <dxo-editing mode="row" [allowUpdating]="true" [allowDeleting]="true"></dxo-editing>
     <dxi-column dataField="roomNumber" caption="Phòng" [allowEditing]="false"></dxi-column>
     <dxi-column dataField="categoryName" caption="Hạng phòng" [allowEditing]="false"></dxi-column>
     <dxi-column dataField="pricePerNight" caption="Giá/đêm" [allowEditing]="false"></dxi-column>
@@ -84,7 +84,7 @@
   </dx-data-grid>
 
   <button class="btn btn-success mt-3" (click)="submitBooking()" [disabled]="!customerInfo.fullName || details.length === 0">
-    <span *ngIf="!isLoading">Tạo Booking</span>
+    <span *ngIf="!isLoading">Cập nhật</span>
     <span *ngIf="isLoading">
       <i class="fa fa-spinner fa-spin me-2"></i> Đang xử lý...
     </span>
@@ -130,7 +130,6 @@
           <label>Ghi chú</label>
           <textarea class="form-control" [(ngModel)]="newCustomer.notes" name="notes"></textarea>
         </div>
-
         <div class="text-end">
           <button type="button" class="btn btn-secondary me-2" (click)="showAddCustomer = false">Hủy</button>
           <button type="button" class="btn btn-success" (click)="addNewCustomer()">Lưu</button>
@@ -150,15 +149,6 @@
         {{ customer.fullName }} - {{ customer.phone }} - {{ customer.email }}
       </div>
     </dx-list>
-  </dx-popup>
-
-  <!-- Popup thông báo ConfirmationNo sau tạo thành công -->
-  <dx-popup [visible]="showConfirmationModal" title="Tạo Booking Thành Công" (onHiding)="closeConfirmationModal()">
-    <p>Số ConfirmationNo: {{ confirmationNo }}</p>
-    <div class="d-flex justify-content-end">
-      <dx-button text="Copy" (onClick)="copyConfirmationNo()"></dx-button>
-      <dx-button text="Đóng" type="default" (onClick)="closeConfirmationModal()"></dx-button>
-    </div>
   </dx-popup>
 
   <!-- Template cho nút xóa -->

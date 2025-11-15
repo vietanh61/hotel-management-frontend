@@ -21,6 +21,7 @@ import { CreateBookingComponent } from './components/create-booking/create-booki
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './interceptors/auth.interceptor';  // Add this import (adjust path if needed)
 import { BookingsComponent } from './components/bookings/bookings.component';
+import { EditBookingComponent } from './components/edit-booking/edit-booking.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { BookingsComponent } from './components/bookings/bookings.component';
     RoomsComponent,
     SearchComponent,
     CreateBookingComponent,
-    BookingsComponent
+    BookingsComponent,
+    EditBookingComponent,
   ],
   imports: [
     BrowserModule,

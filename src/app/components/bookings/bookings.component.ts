@@ -4,6 +4,7 @@ import { BookingService } from '../../services/booking.service';
 import { BookingStatusService } from '../../services/booking-status.service';
 import { PaymentMethodService } from '../../services/payment-method.service';
 import { ToastrService } from 'ngx-toastr';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-bookings',
@@ -19,6 +20,8 @@ export class BookingsComponent implements OnInit {
   selectedBooking: any = null;
 
   constructor(
+    private router: Router,
+    private route: ActivatedRoute,
     private bookingService: BookingService,
     private bookingStatusService: BookingStatusService,
     private paymentMethodService: PaymentMethodService,
@@ -64,6 +67,9 @@ export class BookingsComponent implements OnInit {
   openDetailModal(booking: any) {
     this.selectedBooking = { ...booking };  // Copy để edit
     this.showDetailModal = true;
+  }
+  openDetail(booking: any) {
+    this.router.navigate(['/edit-booking'], { queryParams: { bookingId: booking.id } });
   }
 
   // updateBooking(booking: any) {

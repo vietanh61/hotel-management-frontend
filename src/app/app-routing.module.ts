@@ -10,6 +10,7 @@ import { SearchComponent } from './components/search/search.component';
 import { CreateBookingComponent } from './components/create-booking/create-booking.component';
 import { AuthGuard } from './guards/auth.guard';  // Import guard
 import { BookingsComponent } from './components/bookings/bookings.component';
+import { EditBookingComponent } from './components/edit-booking/edit-booking.component';
 
 
 const routes: Routes = [
@@ -26,6 +27,7 @@ const routes: Routes = [
       { path: 'search', component: SearchComponent,canActivate: [AuthGuard] },
       { path: 'create-booking', component: CreateBookingComponent,canActivate: [AuthGuard] },
       { path: 'bookings', component: BookingsComponent,canActivate: [AuthGuard] },
+      { path: 'edit-booking', component: EditBookingComponent,canActivate: [AuthGuard] },
   ] 
   },
   {

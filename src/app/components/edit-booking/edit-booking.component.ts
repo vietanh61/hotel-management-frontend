@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { BookingService } from '../../services/booking.service';
 import { CustomerService } from '../../services/customer.service';
@@ -7,11 +7,12 @@ import { BookingStatusService } from '../../services/booking-status.service';
 import { PaymentMethodService } from '../../services/payment-method.service';
 
 @Component({
-  selector: 'app-create-booking',
-  templateUrl: './create-booking.component.html',
-  styleUrls: ['./create-booking.component.scss']
+  selector: 'app-edit-booking',
+  templateUrl: './edit-booking.component.html',
+  styleUrls: ['./edit-booking.component.scss']
 })
-export class CreateBookingComponent implements OnInit {
+export class EditBookingComponent implements OnInit {
+  bookingId: number | null = null;
   booking: any = { checkIn: '', checkOut: '', totalPrice: 0, notes: '' };
   customerInfo: any = { fullName: '', email: '', phone: '', address: '', idNumber: '', notes: '' };  // Thông tin khách editable
   details: any[] = [];  // Thêm quantity default 1
@@ -23,10 +24,11 @@ export class CreateBookingComponent implements OnInit {
   isCustomerChanged: boolean = false;  // Flag nếu thay đổi khách
   isLoading: boolean = false;  // Trạng thái loading
   confirmationNo: string = '';
-  showConfirmationModal: boolean = false;
   bookingStatuses: any[]=[];
   paymentMethods: any[]=[]
+
   constructor(
+    private route: ActivatedRoute,
     private router: Router,
     private bookingService: BookingService,
     private customerService: CustomerService,
@@ -38,43 +40,12 @@ export class CreateBookingComponent implements OnInit {
   ngOnInit(): void {
     // Lấy dữ liệu từ navigation state (nếu có)
     const navigation = this.router.getCurrentNavigation();
-    const state = navigation?.extras.state as { selectedRooms: any[], checkIn: string, checkOut: string } | undefined;
-
-    let bookingState = state;
-
-    // Nếu không có state (do reload trang), đọc lại từ localStorage
-    if (!bookingState) {
-      const storedState = localStorage.getItem('bookingState');
-      if (storedState) {
-        bookingState = JSON.parse(storedState);
-      }
-    }
-
-    // Nếu vẫn không có, quay lại trang tìm kiếm
-    if (!bookingState || !bookingState.selectedRooms || bookingState.selectedRooms.length === 0) {
-      this.toastr.error('Không có dữ liệu phòng được chọn. Vui lòng quay lại tìm kiếm.', 'Lỗi');
-      this.router.navigate(['/search']);
-      return;
-    }
-
-    this.loadBookingStatuses();
+    this.bookingId = +this.route.snapshot.queryParamMap.get('bookingId')!;
+    if (this.bookingId) {
+      this.loadBookingDetails(this.bookingId);
+    } 
     this.loadPaymentMethods();
-
-    // Gán thông tin booking
-    this.booking.checkIn = bookingState.checkIn;
-    this.booking.checkOut = bookingState.checkOut;
-
-    // Map lại danh sách phòng
-    this.details = bookingState.selectedRooms.map(room => ({
-      roomId: room.roomId,
-      roomNumber: room.roomNumber,
-      categoryName: room.categoryName,
-      pricePerNight: room.pricePerNight,
-      quantity: 1,
-      subtotal: this.calculateSubtotal(room.pricePerNight, bookingState!.checkIn, bookingState!.checkOut, 1)
-    }));
-
-    this.calculateTotal();
+    this.loadBookingStatuses();
   }
 
   calculateSubtotal(pricePerNight: number, checkIn: string, checkOut: string, quantity: number): number {
@@ -157,46 +128,38 @@ export class CreateBookingComponent implements OnInit {
     this.isLoading = true;  // Bật loading
 
     let customerId = this.customerInfo.id;  // ID khách hiện tại nếu không thay đổi
+    let bookingId = this.bookingId;
     if (this.isCustomerChanged) {  // Nếu thay đổi, tạo khách mới
       this.customerService.createCustomer(this.customerInfo).subscribe(response => {
         if (response.code === 201) {
           customerId = response.data.id;
-          this.proceedWithBooking(customerId);
+          this.proceedWithBooking(customerId, bookingId);
         } else {
           this.toastr.error('Lỗi tạo khách mới', 'Lỗi');
           this.isLoading = false;
         }
       });
     } else {
-      this.proceedWithBooking(customerId);
+      this.proceedWithBooking(customerId, bookingId);
     }
   }
 
-  proceedWithBooking(customerId: number) {
+  proceedWithBooking(customerId: number, bookingId: number|null) {
     this.booking.customerId = customerId;
+    this.booking.id = bookingId;
     const payload = { booking: this.booking, details: this.details };
-    this.bookingService.createBookingWithDetails(payload).subscribe(response => {
+    this.bookingService.editBookingWithDetails(payload).subscribe(response => {
       this.isLoading = false;  // Tắt loading
       if (response.code === 201) {
-        this.toastr.success('Tạo booking thành công', 'Thành công');
-        this.confirmationNo = response.data.confirmationNo;  // Lấy từ response
-        this.showConfirmationModal = true;  // Show modal
+        this.toastr.success('Cập nhật booking thành công', 'Thành công');
       } else {
         this.toastr.error(response.name, 'Lỗi');
       }
     });
   }
 
-  copyConfirmationNo() {
-    navigator.clipboard.writeText(this.confirmationNo).then(() => {
-      this.toastr.success('Đã copy ConfirmationNo', 'Thành công');
-    }).catch(() => {
-      this.toastr.error('Lỗi copy', 'Lỗi');
-    });
-  }
 
   closeConfirmationModal() {
-    this.showConfirmationModal = false;
     this.router.navigate(['/bookings']);
   }
 
@@ -213,9 +176,32 @@ export class CreateBookingComponent implements OnInit {
     this.booking.totalPrice = this.details.reduce((sum, d) => sum + d.subtotal, 0);
   }
 
-  onConfirmationPopupShown() {
-    console.log('confirmation popup shown, visible=', this.showConfirmationModal);
+  loadBookingDetails(id: number) {
+    this.bookingService.getBooking(id).subscribe(response => {
+
+      if (response.code === 404) {
+        this.toastr.error("Không tim thấy booking nào", 'Lỗi');
+        return;
+      }
+      if (response.code === 200) {
+        this.booking = response.data;
+        this.customerInfo = response.data.customer;
+        this.details = response.data.bookingDetails.map((detail: any) => ({
+          roomId :  detail.roomId,
+          roomNumber: detail.roomNumber,
+          categoryName: detail.categoryName,
+          pricePerNight: detail.pricePerNight,
+          quantity: detail.quantity,  // Giả định, adjust nếu có quantity
+          subtotal: detail.subtotal
+        }));
+        this.calculateTotal();
+      } 
+      else {
+        this.toastr.error(response.name, 'Lỗi');
+      }
+    });
   }
+
   loadBookingStatuses() {
     this.bookingStatusService.getBookingStatuses().subscribe(response => {
       if (response.code === 200) {
@@ -235,15 +221,4 @@ export class CreateBookingComponent implements OnInit {
       }
     });
   }
-
-  // updateBooking(booking: any) {
-  //   this.bookingService.updateBooking(booking.id, booking).subscribe(response => {
-  //     if (response.code === 200) {
-  //       this.toastr.success('Cập nhật thành công', 'Thành công');
-  //       this.loadBookings();
-  //     } else {
-  //       this.toastr.error(response.name, 'Lỗi');
-  //     }
-  //   });
-  // }
 }

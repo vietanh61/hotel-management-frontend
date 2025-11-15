@@ -24,4 +24,9 @@ export class BookingService {
   createBookingWithDetails(payload: { booking: Booking, details: any[] }): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/create-with-details`, payload);
   }
+
+  editBookingWithDetails(payload: { booking: Booking, details: any[] }): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/edit-with-details`, payload);
+  }
+  
 }
