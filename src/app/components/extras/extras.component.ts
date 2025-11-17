@@ -59,10 +59,16 @@ export class ExtrasComponent {
   onInitNewRow(event: any) {
     event.data.hotelId = this.hotels.length > 0 ? this.hotels[0].id : null;  // Default to first hotel if available
   }
-  onRowInserted(event: any) {
+  onRowInserting(event: any) {
     if (!event.data.hotelId) {
       this.toastr.error('Vui lòng chọn khách sạn', 'Thông báo');
-      event.cancel = true;
+      event.cancel = true; // NGĂN popup đóng
+      return;
+    }
+
+    if (!event.data.unitId) {
+      this.toastr.error('Vui lòng chọn đơn vị tính', 'Thông báo');
+      event.cancel = true; // NGĂN popup đóng
       return;
     }
     this.extraService.createExtra(event.data).subscribe(response => {
@@ -78,6 +84,12 @@ export class ExtrasComponent {
     const updatedData = { ...event.oldData, ...event.newData };
     if (!updatedData.hotelId) {
       this.toastr.error('Vui lòng chọn khách sạn', 'Thông báo');
+      event.cancel = true; // KHÔNG cho popup đóng
+      return;
+    }
+
+    if (!updatedData.unitId) {
+      this.toastr.error('Vui lòng chọn đơn vị tính', 'Thông báo');
       event.cancel = true;
       return;
     }

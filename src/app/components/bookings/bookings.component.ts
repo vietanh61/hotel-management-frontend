@@ -19,6 +19,16 @@ export class BookingsComponent implements OnInit {
   showDetailModal: boolean = false;
   selectedBooking: any = null;
 
+  readonly allowedPageSizes = [5, 10, 'all'];
+  readonly displayModes = [{ text: "Display Mode 'full'", value: 'full' }, { text: "Display Mode 'compact'", value: 'compact' }];
+  displayMode = 'full';
+
+  showPageSizeSelector = true;
+
+  showInfo = true;
+
+  showNavButtons = true;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -71,7 +81,7 @@ export class BookingsComponent implements OnInit {
   openDetail(booking: any) {
     this.router.navigate(['/edit-booking'], { queryParams: { bookingId: booking.id } });
   }
-
+ 
   // updateBooking(booking: any) {
   //   this.bookingService.updateBooking(booking.id, booking).subscribe(response => {
   //     if (response.code === 200) {

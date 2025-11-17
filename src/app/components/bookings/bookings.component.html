@@ -3,7 +3,7 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1 class="mt-4 mb-2">Danh sách Booking</h1>
+        <h1>Danh sách Booking</h1>
       </div>
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
@@ -14,33 +14,64 @@
     </div>
   </div><!-- /.container-fluid -->
 </section>
+<section class="content">
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <div class="row">
+              
+              
+              
+          </div>
+        </div>
+        <div class="card-body">
+          <dx-data-grid
+            id="gridContainer"
+            [dataSource]="bookings"
+            [showBorders]="true"
+            [remoteOperations]="false"
+            [allowColumnReordering]="true"
+            [allowColumnResizing]="true"
+            [columnAutoWidth]="true"
+            [hoverStateEnabled]="true">
+            
+            <dxi-column dataField="id" caption="ID" [allowEditing]="false"></dxi-column>
+            <dxi-column dataField="customer.fullName" caption="Khách hàng" [allowEditing]="false"></dxi-column>
+            <dxi-column dataField="checkIn" caption="Check-in" [dataType]="'date'" [allowEditing]="false"></dxi-column>
+            <dxi-column dataField="checkOut" caption="Check-out" [dataType]="'date'" [allowEditing]="false"></dxi-column>
+            <dxi-column dataField="totalPrice" caption="Tổng tiền" [allowEditing]="false"></dxi-column>
+            <dxi-column dataField="bookingStatus.name" caption="Trạng thái" [allowEditing]="false"></dxi-column>
+            <dxi-column caption="Hành động" cellTemplate="actionTemplate" [allowEditing]="false"></dxi-column>
 
-<div class="container mt-4">
-  <h2>Danh sách Booking</h2>
-  <dx-data-grid
-    id="gridContainer"
-    [dataSource]="bookings"
-    [showBorders]="true"
-    [remoteOperations]="false"
-    [allowColumnReordering]="true"
-    [allowColumnResizing]="true"
-    [columnAutoWidth]="true">
+            <!-- Template cho nút Chi tiết -->
+            <div *dxTemplate="let data of 'actionTemplate'">
+              <dx-button text="Chi tiết" (onClick)="openDetail(data.data)"></dx-button>
+            </div>
+            <dxo-selection mode="single"></dxo-selection>
+            <dxo-filter-row [visible]="true"></dxo-filter-row>
+            <dxo-scrolling rowRenderingMode="virtual"> </dxo-scrolling>
+            <dxo-paging [pageSize]="10"> </dxo-paging>
+            <dxo-pager
+              [visible]="true"
+              [showPageSizeSelector]="showPageSizeSelector"
+              [showInfo]="showInfo"
+              [showNavigationButtons]="showNavButtons">
+            </dxo-pager>
+          </dx-data-grid>
 
-    <dxi-column dataField="id" caption="ID" [allowEditing]="false"></dxi-column>
-    <dxi-column dataField="customer.fullName" caption="Khách hàng" [allowEditing]="false"></dxi-column>
-    <dxi-column dataField="checkIn" caption="Check-in" [dataType]="'date'" [allowEditing]="false"></dxi-column>
-    <dxi-column dataField="checkOut" caption="Check-out" [dataType]="'date'" [allowEditing]="false"></dxi-column>
-    <dxi-column dataField="totalPrice" caption="Tổng tiền" [allowEditing]="false"></dxi-column>
-    <dxi-column dataField="status.name" caption="Trạng thái" [allowEditing]="false"></dxi-column>
-    <dxi-column caption="Hành động" cellTemplate="actionTemplate" [allowEditing]="false"></dxi-column>
 
-    <!-- Template cho nút Chi tiết -->
-    <div *dxTemplate="let data of 'actionTemplate'">
-      <dx-button text="Chi tiết" (onClick)="openDetail(data.data)"></dx-button>
+
+
+
+        </div>
+      </div>
     </div>
-  </dx-data-grid>
+  </div>
+</div>
 
-  <!-- Popup chi tiết booking -->
+<!-- Popup chi tiết booking -->
   <dx-popup [visible]="showDetailModal" title="Chi tiết Booking" [width]="800" (onHiding)="showDetailModal = false">
     <form *ngIf="selectedBooking">
       <div class="row">
@@ -117,4 +148,4 @@
       </dx-data-grid>
     </form>
   </dx-popup>
-</div>
+
