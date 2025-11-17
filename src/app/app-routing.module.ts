@@ -11,6 +11,8 @@ import { CreateBookingComponent } from './components/create-booking/create-booki
 import { AuthGuard } from './guards/auth.guard';  // Import guard
 import { BookingsComponent } from './components/bookings/bookings.component';
 import { EditBookingComponent } from './components/edit-booking/edit-booking.component';
+import { PricePeriodsComponent } from './components/price-periods/price-periods.component';
+import { ExtrasComponent } from './components/extras/extras.component';
 
 
 const routes: Routes = [
@@ -28,6 +30,8 @@ const routes: Routes = [
       { path: 'create-booking', component: CreateBookingComponent,canActivate: [AuthGuard] },
       { path: 'bookings', component: BookingsComponent,canActivate: [AuthGuard] },
       { path: 'edit-booking', component: EditBookingComponent,canActivate: [AuthGuard] },
+      { path: 'price-periods', component: PricePeriodsComponent,canActivate: [AuthGuard] },
+      { path: 'extras', component: ExtrasComponent,canActivate: [AuthGuard] },
   ] 
   },
   {

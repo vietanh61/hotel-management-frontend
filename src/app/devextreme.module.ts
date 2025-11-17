@@ -6,7 +6,8 @@ import {
   DxListModule,
   DxFormModule,
   DxTemplateModule,
-  DxSelectBoxModule
+  DxSelectBoxModule,
+  DxNumberBoxModule
 } from 'devextreme-angular';
 
 @NgModule({
@@ -17,7 +18,8 @@ import {
     DxListModule,
     DxFormModule,
     DxTemplateModule,
-    DxSelectBoxModule    
+    DxSelectBoxModule,
+    DxNumberBoxModule
   ]
 })
 export class DevExtremeModule { }
