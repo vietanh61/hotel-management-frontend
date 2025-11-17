@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RoomCategoryService } from '../../services/room-category.service';
 import { HotelService } from '../../services/hotel.service';
+import { ToastrService } from 'ngx-toastr';  // Import Toastr
 
 @Component({
   selector: 'app-room-categories',
@@ -13,7 +14,8 @@ export class RoomCategoriesComponent {
 
   constructor(
     private roomCategoryService: RoomCategoryService,
-    private hotelService: HotelService
+    private hotelService: HotelService,
+    private toastr: ToastrService,
   ) { }
 
   ngOnInit(): void {
@@ -26,16 +28,18 @@ export class RoomCategoriesComponent {
       if (response.code === 200) {
         this.room_categories = response.data;
       } else {
-        alert(response.name);
+        //alert(response.name);
+        this.toastr.error(response.name, 'Thông báo');
       }
     });
   }
-loadHotels() {
+  loadHotels() {
     this.hotelService.getHotels().subscribe(response => {
       if (response.code === 200) {
         this.hotels = response.data;
       } else {
-        alert('Lỗi load khách sạn: ' + response.name);
+        //alert('Lỗi load khách sạn: ' + response.name);
+        this.toastr.error(response.name, 'Thông báo');
       }
     });
   }
@@ -44,7 +48,8 @@ loadHotels() {
   }
   onRowInserted(event: any) {
     if (!event.data.hotelId) {
-      alert('Vui lòng chọn khách sạn');
+      //alert('Vui lòng chọn khách sạn');
+      this.toastr.error('Vui lòng chọn khách sạn', 'Thông báo');
       event.cancel = true;
       return;
     }
@@ -52,7 +57,8 @@ loadHotels() {
       if (response.code === 201) {
         this.loadRoomCategories();
       } else {
-        alert('Lỗi: ' + response.name);
+        //alert('Lỗi: ' + response.name);
+        this.toastr.error(response.name, 'Thông báo');
       }
     });
   }
@@ -60,7 +66,7 @@ loadHotels() {
   onRowUpdating(event: any) {
     const updatedData = { ...event.oldData, ...event.newData };
     if (!updatedData.hotelId) {
-      alert('Vui lòng chọn khách sạn');
+      this.toastr.error('Vui lòng chọn khách sạn', 'Thông báo');
       event.cancel = true;
       return;
     }
@@ -68,7 +74,8 @@ loadHotels() {
       if (response.code === 200) {
         this.loadRoomCategories();
       } else {
-        alert('Lỗi: ' + response.name);
+        //alert('Lỗi: ' + response.name);
+        this.toastr.error(response.name, 'Thông báo');
       }
     });
   }
@@ -78,7 +85,8 @@ loadHotels() {
       if (response.code === 200) {
         this.loadRoomCategories();
       } else {
-        alert('Lỗi: ' + response.name);
+        //alert('Lỗi: ' + response.name);
+        this.toastr.error(response.name, 'Thông báo');
       }
     });
   }
