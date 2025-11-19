@@ -135,7 +135,7 @@ export class EditBookingComponent implements OnInit {
           customerId = response.data.id;
           this.proceedWithBooking(customerId, bookingId);
         } else {
-          this.toastr.error('Lỗi tạo khách mới', 'Lỗi');
+          this.toastr.success('Lỗi tạo khách mới', 'Lỗi');
           this.isLoading = false;
         }
       });
@@ -188,10 +188,10 @@ export class EditBookingComponent implements OnInit {
         this.customerInfo = response.data.customer;
         this.details = response.data.bookingDetails.map((detail: any) => ({
           roomId :  detail.roomId,
-          roomNumber: detail.roomNumber,
-          categoryName: detail.categoryName,
+          roomNumber: detail.room.roomNumber,
+          categoryName: detail.room.category.name,
           pricePerNight: detail.pricePerNight,
-          quantity: detail.quantity,  // Giả định, adjust nếu có quantity
+          quantity: 1,  // Giả định, adjust nếu có quantity
           subtotal: detail.subtotal
         }));
         this.calculateTotal();

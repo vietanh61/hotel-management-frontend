@@ -4,7 +4,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { HotelsComponent } from './components/hotels/hotels.component';  // Thêm dòng này
-import { DevExtremeModule } from './devextreme.module'; // đường dẫn chỉnh cho đúng
 import { FormsModule } from '@angular/forms';
 import { RolesComponent } from './components/roles/roles.component';
 import { UsersComponent } from './components/users/users.component';
@@ -24,6 +23,10 @@ import { BookingsComponent } from './components/bookings/bookings.component';
 import { EditBookingComponent } from './components/edit-booking/edit-booking.component';
 import { PricePeriodsComponent } from './components/price-periods/price-periods.component';
 import { ExtrasComponent } from './components/extras/extras.component';
+
+import { DevExtremeModule } from './devextreme.module'; // đường dẫn chỉnh cho đúng
+
+import { DxTemplateModule } from 'devextreme-angular';
 
 @NgModule({
   declarations: [
@@ -51,6 +54,7 @@ import { ExtrasComponent } from './components/extras/extras.component';
     DevExtremeModule,
     FormsModule,
     BrowserAnimationsModule,  // Add this for toastr animations
+    DxTemplateModule, 
     ToastrModule.forRoot({    // Configure globally
       timeOut: 5000,
       positionClass: 'toast-top-right',
