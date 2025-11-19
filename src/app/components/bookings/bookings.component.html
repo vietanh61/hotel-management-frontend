@@ -42,11 +42,12 @@
             [hoverStateEnabled]="true">
             
             <dxi-column dataField="id" caption="ID" [allowEditing]="false"></dxi-column>
+            <dxi-column dataField="confirmationNo" caption="Mã đặt phòng" [allowEditing]="false"></dxi-column>
             <dxi-column dataField="customer.fullName" caption="Khách hàng" [allowEditing]="false"></dxi-column>
             <dxi-column dataField="checkIn" caption="Check-in" [dataType]="'date'" [allowEditing]="false"></dxi-column>
             <dxi-column dataField="checkOut" caption="Check-out" [dataType]="'date'" [allowEditing]="false"></dxi-column>
             <dxi-column dataField="totalPrice" caption="Tổng tiền" [allowEditing]="false"></dxi-column>
-            <dxi-column dataField="bookingStatus.name" caption="Trạng thái" [allowEditing]="false"></dxi-column>
+            <dxi-column dataField="status.name" caption="Trạng thái" [allowEditing]="false"></dxi-column>
             <dxi-column caption="Hành động" cellTemplate="actionTemplate" [allowEditing]="false"></dxi-column>
 
             <!-- Template cho nút Chi tiết -->
