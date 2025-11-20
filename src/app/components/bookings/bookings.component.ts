@@ -82,14 +82,15 @@ export class BookingsComponent implements OnInit {
     this.router.navigate(['/edit-booking'], { queryParams: { bookingId: booking.id } });
   }
  
-  // updateBooking(booking: any) {
-  //   this.bookingService.updateBooking(booking.id, booking).subscribe(response => {
-  //     if (response.code === 200) {
-  //       this.toastr.success('Cập nhật thành công', 'Thành công');
-  //       this.loadBookings();
-  //     } else {
-  //       this.toastr.error(response.name, 'Lỗi');
-  //     }
-  //   });
-  // }
+  onCellPrepared(e: any) {
+    if (e.rowType === 'data' && e.column.dataField === 'status.name') {
+        const status = e.data.status?.name;
+
+        if (status === 'Canceled' || status === 'Cancelled') {
+            e.cellElement.style.backgroundColor = '#ffcccc';
+            e.cellElement.style.color = 'red';
+            e.cellElement.style.fontWeight = 'bold';
+        }
+    }
+  }
 }

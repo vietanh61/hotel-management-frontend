@@ -1,0 +1,8 @@
+.row-canceled {
+  background-color: #ffcccc !important;  // Màu đỏ nhạt cho cả dòng
+  color: #ff0000;  // Chữ đỏ
+}
+
+.row-canceled .dx-datagrid-content td {
+  background-color: #ffcccc !important;
+}

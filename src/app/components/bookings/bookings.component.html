@@ -39,14 +39,16 @@
             [allowColumnReordering]="true"
             [allowColumnResizing]="true"
             [columnAutoWidth]="true"
-            [hoverStateEnabled]="true">
+            [hoverStateEnabled]="true"
+            (onCellPrepared)="onCellPrepared($event)"
+            >
             
             <dxi-column dataField="id" caption="ID" [allowEditing]="false"></dxi-column>
             <dxi-column dataField="confirmationNo" caption="Mã đặt phòng" [allowEditing]="false"></dxi-column>
             <dxi-column dataField="customer.fullName" caption="Khách hàng" [allowEditing]="false"></dxi-column>
             <dxi-column dataField="checkIn" caption="Check-in" [dataType]="'date'" [allowEditing]="false"></dxi-column>
             <dxi-column dataField="checkOut" caption="Check-out" [dataType]="'date'" [allowEditing]="false"></dxi-column>
-            <dxi-column dataField="totalPrice" caption="Tổng tiền" [allowEditing]="false"></dxi-column>
+            <dxi-column dataField="totalPrice" caption="Tổng tiền" [allowEditing]="false" format='#,##0'></dxi-column>
             <dxi-column dataField="status.name" caption="Trạng thái" [allowEditing]="false"></dxi-column>
             <dxi-column caption="Hành động" cellTemplate="actionTemplate" [allowEditing]="false"></dxi-column>
 
@@ -65,92 +67,9 @@
               [showNavigationButtons]="showNavButtons">
             </dxo-pager>
           </dx-data-grid>
-
-
-
-
-
         </div>
       </div>
     </div>
   </div>
 </div>
-
-<!-- Popup chi tiết booking -->
-  <dx-popup [visible]="showDetailModal" title="Chi tiết Booking" [width]="800" (onHiding)="showDetailModal = false">
-    <form *ngIf="selectedBooking">
-      <div class="row">
-        <!-- Thông tin khách -->
-        <div class="col-md-6">
-          <label>Họ tên</label>
-          <input type="text" class="form-control" [value]="selectedBooking.customer.fullName" disabled>
-        </div>
-        <div class="col-md-6">
-          <label>Email</label>
-          <input type="email" class="form-control" [value]="selectedBooking.customer.email" disabled>
-        </div>
-        <div class="col-md-6">
-          <label>SĐT</label>
-          <input type="text" class="form-control" [value]="selectedBooking.customer.phone" disabled>
-        </div>
-        <div class="col-md-6">
-          <label>Địa chỉ</label>
-          <input type="text" class="form-control" [value]="selectedBooking.customer.address" disabled>
-        </div>
-        <div class="col-md-6">
-          <label>CMND/Passport</label>
-          <input type="text" class="form-control" [value]="selectedBooking.customer.idNumber" disabled>
-        </div>
-        <div class="col-md-6">
-          <label>Ghi chú khách</label>
-          <textarea class="form-control" [value]="selectedBooking.customer.notes" disabled></textarea>
-        </div>
-        <!-- Thông tin booking -->
-        <div class="col-md-6">
-          <label>Check-in</label>
-          <input type="date" class="form-control" [value]="selectedBooking.checkIn" disabled>
-        </div>
-        <div class="col-md-6">
-          <label>Check-out</label>
-          <input type="date" class="form-control" [value]="selectedBooking.checkOut" disabled>
-        </div>
-        <div class="col-md-6">
-          <label>Tổng tiền</label>
-          <input type="number" class="form-control" [value]="selectedBooking.totalPrice" disabled>
-        </div>
-        <div class="col-md-6">
-          <label>Ghi chú booking</label>
-          <textarea class="form-control" [value]="selectedBooking.notes" disabled></textarea>
-        </div>
-        <!-- Combobox Hình thức thanh toán -->
-        <div class="col-md-6">
-          <label>Hình thức thanh toán</label>
-          <dx-select-box
-            [dataSource]="paymentMethods"
-            valueExpr="id"
-            displayExpr="name"
-            [(value)]="selectedBooking.paymentMethodId">
-          </dx-select-box>
-        </div>
-        <!-- Combobox Trạng thái booking -->
-        <div class="col-md-6">
-          <label>Trạng thái</label>
-          <dx-select-box
-            [dataSource]="bookingStatuses"
-            valueExpr="id"
-            displayExpr="name"
-            [(value)]="selectedBooking.statusId">
-          </dx-select-box>
-        </div>
-      </div>
-
-      <!-- Detail phòng -->
-      <dx-data-grid [dataSource]="selectedBooking.bookingDetails" [showBorders]="true">
-        <dxi-column dataField="room.roomNumber" caption="Phòng"></dxi-column>
-        <dxi-column dataField="room.category.name" caption="Hạng phòng"></dxi-column>
-        <dxi-column dataField="pricePerNight" caption="Giá/đêm"></dxi-column>
-        <dxi-column dataField="subtotal" caption="Tiểu tổng"></dxi-column>
-      </dx-data-grid>
-    </form>
-  </dx-popup>
 

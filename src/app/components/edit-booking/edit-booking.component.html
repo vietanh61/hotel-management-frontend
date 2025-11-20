@@ -19,7 +19,7 @@
       <div class="col-12">
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title">Mã Booking: {{booking.confirmationNo}}</h3>
+            <h3 class="card-title">Mã Booking: <b>{{booking.confirmationNo}}</b></h3>
             <div class="card-tools">
               <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                 <i class="fas fa-minus"></i>
@@ -34,48 +34,54 @@
                 <div class="row">
                   <!-- Thông tin khách (editable, nếu thay đổi tạo mới) -->
                   <div class="col-md-6">
-                    <label>Họ tên</label>
+                    <label>Khách hàng</label>
                     <!-- <input type="text" class="form-control" [(ngModel)]="customerInfo.fullName" name="fullName" [readOnly]="true"> -->
-                    <div class="input-group mb-3">
+                    <div class="input-group mb-2">
                       <input type="text" class="form-control" [(ngModel)]="customerInfo.fullName" name="fullName" [readOnly]="true">
-                      <button class="btn btn-primary" (click)="openSearchCustomerModal()">Chọn khách hàng</button>
+                      <button class="btn btn-primary" (click)="openSearchCustomerModal()">Chọn khách</button>
                       <!-- Nút mở modal tìm khách -->
-                      <button class="btn btn-primary ms-1" (click)="openAddCustomerPopup()">Thêm khách mới</button>
+                      <button class="btn btn-primary ms-1" (click)="openAddCustomerPopup()">Thêm khách</button>
                     </div>
-                    
                   </div>
-                  
                   <div class="col-md-6">
-                    <label>SĐT</label>
-                    <input type="text" class="form-control" [(ngModel)]="customerInfo.phone" name="phone" [readOnly]="true">
+                    <label>Điện thoại</label>
+                    <input type="text" class="form-control mb-2" [(ngModel)]="customerInfo.phone" name="phone" [readOnly]="true">
                   </div>
                   <div class="col-md-6">
                     <label>Email</label>
-                    <input type="email" class="form-control" [(ngModel)]="customerInfo.email" name="email" [readOnly]="true">
+                    <input type="email" class="form-control mb-2" [(ngModel)]="customerInfo.email" name="email" [readOnly]="true">
                   </div>
                   <div class="col-md-6">
                     <label>Địa chỉ</label>
-                    <input type="text" class="form-control" [(ngModel)]="customerInfo.address" name="address" [readOnly]="true">
+                    <input type="text" class="form-control mb-2" [(ngModel)]="customerInfo.address" name="address" [readOnly]="true">
                   </div>
                   <div class="col-md-6">
                     <label>CMND/Passport</label>
-                    <input type="text" class="form-control" [(ngModel)]="customerInfo.idNumber" name="idNumber" [readOnly]="true">
+                    <input type="text" class="form-control mb-2" [(ngModel)]="customerInfo.idNumber" name="idNumber" [readOnly]="true">
+                  </div>
+                  <div class="col-md-6">
+                    <label>Ghi chú khách</label>
+                    <input type="text" class="form-control mb-2" [(ngModel)]="customerInfo.notes" name="customerNotes"  [readOnly]="true">
                   </div>
                   <div class="col-md-6">
                     <label>Check-in</label>
-                    <input type="date" class="form-control" [(ngModel)]="booking.checkIn" name="checkIn">
+                    <input type="date" class="form-control mb-2" [(ngModel)]="booking.checkIn" name="checkIn">
                   </div>
                   <div class="col-md-6">
                     <label>Check-out</label>
-                    <input type="date" class="form-control" [(ngModel)]="booking.checkOut" name="checkOut">
+                    <input type="date" class="form-control mb-2" [(ngModel)]="booking.checkOut" name="checkOut">
                   </div>
                   <div class="col-md-6">
                     <label>Tổng tiền</label>
-                    <input type="number" class="form-control" [(ngModel)]="booking.totalPrice" name="totalPrice">
+                    <dx-number-box
+                      [(value)]="booking.totalPrice"
+                      [format]="'#,##0'"
+                      [readOnly]="true">
+                    </dx-number-box>
                   </div>
                   <div class="col-md-6">
                     <label>Ghi chú booking</label>
-                    <textarea class="form-control" [(ngModel)]="booking.notes" name="notes"></textarea>
+                    <input type="text" class="form-control mb-2" [(ngModel)]="booking.notes" name="notes">
                   </div>
                   <!-- Combobox Hình thức thanh toán -->
                     <div class="col-md-6">
@@ -84,7 +90,9 @@
                         [dataSource]="paymentMethods"
                         valueExpr="id"
                         displayExpr="name"
-                        [(value)]="booking.paymentMethodId">
+                        [(value)]="booking.paymentMethodId"
+                        class="form-control mb-2"
+                        >
                       </dx-select-box>
                     </div>
                     <!-- Combobox Trạng thái booking -->
@@ -94,13 +102,15 @@
                         [dataSource]="bookingStatuses"
                         valueExpr="id"
                         displayExpr="name"
-                        [(value)]="booking.statusId">
+                        [(value)]="booking.statusId"
+                        class="form-control mb-2"
+                        >
                       </dx-select-box>
                     </div>
                 </div>
               </form>
             <div class="row">
-              <div class="col-md-12">
+              <div class="col-md-6">
                 <label>Danh sách phòng</label>
                 <!-- Detail: Thông tin phòng (DevExtreme Grid, editable quantity) -->
                 <dx-data-grid 
@@ -119,13 +129,15 @@
                   </dxo-editing>
                   <dxi-column dataField="roomNumber" caption="Phòng" [allowEditing]="false"></dxi-column>
                   <dxi-column dataField="categoryName" caption="Hạng phòng" [allowEditing]="false"></dxi-column>
-                  <dxi-column dataField="pricePerNight" caption="Giá/đêm" [allowEditing]="false"></dxi-column>
-                  <dxi-column dataField="quantity" caption="Số lượng" [allowEditing]="true" disable></dxi-column>
-                  <dxi-column dataField="subtotal" caption="Tiểu tổng" [allowEditing]="false" disable></dxi-column>
+                  <dxi-column dataField="pricePerNight" caption="Giá/đêm" [allowEditing]="false" format='#,##0'></dxi-column>
+                  <dxi-column dataField="quantity" caption="Số lượng" [allowEditing]="true" format='#,##0' disable ></dxi-column>
+                  <dxi-column dataField="subtotal" caption="Tiểu tổng" [allowEditing]="false" format='#,##0' disable></dxi-column>
                 </dx-data-grid>
-
+                <button class="btn btn-primary mt-2" (click)="openRoomSearchModal()">Thêm phòng</button>
+              </div>
+              <div class="col-md-6">
                 <!-- Extras: Thông tin phụ thu (DevExtreme Grid, editable) -->
-                <label>Danh sách phụ thu(nếu có)</label>
+                <label>Danh sách phụ thu</label>
                 <dx-data-grid 
                   [dataSource]="extras"
                   [showBorders]="true"
@@ -136,7 +148,12 @@
                   (onEditorPreparing)="onEditorPreparing($event)"
                   
                   >
-                  <dxo-editing mode="cell" [allowUpdating]="true" [allowAdding]="false" [allowDeleting]="true"></dxo-editing>
+                  <dxo-editing 
+                    mode="cell" 
+                    [allowUpdating]="true" 
+                    [allowAdding]="false" 
+                    [allowDeleting]="true"
+                  ></dxo-editing>
                   <dxi-column dataField="extraId" caption="Phụ thu">
                     <dxo-lookup
                       [dataSource]="allExtras"
@@ -147,27 +164,10 @@
                     </dxo-lookup>
                   </dxi-column>
                   <dxi-column dataField="quantity" caption="Số lượng" [allowEditing]="true"></dxi-column>
-                  <dxi-column dataField="priceAtBooking" caption="Giá" [allowEditing]="false" ></dxi-column>
-                  <dxi-column dataField="subtotal" caption="Tiểu tổng" [allowEditing]="false"></dxi-column>
+                  <dxi-column dataField="priceAtBooking" caption="Giá" [allowEditing]="false" format='#,##0' ></dxi-column>
+                  <dxi-column dataField="subtotal" caption="Tiểu tổng" [allowEditing]="false" format='#,##0'></dxi-column>
                 </dx-data-grid>
                 <button class="btn btn-primary mt-2" (click)="addExtra()">Thêm phụ thu</button>
-                <button class="btn btn-success mt-3" (click)="submitBooking()" [disabled]="!customerInfo.fullName || details.length === 0">
-                  <span *ngIf="!isLoading">Lưu booking</span>
-                  <span *ngIf="isLoading">
-                    <i class="fa fa-spinner fa-spin me-2"></i> Đang xử lý...
-                  </span>
-                </button>    
-                
-                <!-- Nút mở modal tìm khách -->
-                <a class="btn btn-info mt-3 ms-2" href="/bookings">Thoát</a>
-
-                <!-- Overlay loading toàn trang -->
-                <div class="loading-overlay" *ngIf="isLoading">
-                  <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Đang xử lý...</span>
-                  </div>
-                </div>
-
                 <!-- Popup thêm khách mới -->
                 <dx-popup [visible]="showAddCustomer" title="Thêm khách mới" (onHiding)="showAddCustomer = false">
                   <div class="p-3">
@@ -209,6 +209,32 @@
                   </div>
                 </dx-popup>
 
+                <!-- Modal search phòng -->
+                <dx-popup [visible]="showRoomSearchModal" title="Tìm phòng" (onHiding)="showRoomSearchModal = false">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <label>Check-in</label>
+                      <input type="date" [(ngModel)]="roomCheckIn" class="form-control" [readOnly]="true">
+                    </div>
+                    <div class="col-md-6">
+                      <label>Check-out</label>
+                      <input type="date" [(ngModel)]="roomCheckOut" class="form-control" [readOnly]="true">
+                    </div>
+                  </div>
+                  <button class="btn btn-primary mt-2" (click)="searchRooms()">Tìm</button>
+
+                  <dx-data-grid [dataSource]="availableRooms" [showBorders]="true" (onSelectionChanged)="onRoomSelectionChanged($event)">
+                    <dxo-selection mode="multiple"></dxo-selection>
+                    <dxi-column type="selection"></dxi-column>
+                    <dxi-column dataField="roomNumber" caption="Phòng"></dxi-column>
+                    <dxi-column dataField="category.name" caption="Hạng phòng"></dxi-column>
+                    <dxi-column dataField="pricePerNight" caption="Giá/đêm"></dxi-column>
+                    <dxi-column dataField="status.name" caption="Trạng thái"></dxi-column>
+                  </dx-data-grid>
+
+                  <button class="btn btn-success mt-2" (click)="addSelectedRooms()" [disabled]="selectedNewRooms.length === 0">Thêm phòng chọn</button>
+                </dx-popup>
+
                 <!-- Popup tìm khách -->
                 <dx-popup [visible]="showSearchCustomer" title="Tìm khách hàng" (onHiding)="showSearchCustomer = false">
                   <div class="input-group mb-3">
@@ -221,6 +247,25 @@
                     </div>
                   </dx-list>
                 </dx-popup>
+              </div>
+              <div class="=row">
+                <button class="btn btn-success mt-3" (click)="submitBooking()" [disabled]="this.booking.statusId===4 || this.booking.statusId===5">
+                  <span *ngIf="!isLoading">Lưu booking</span>
+                  <span *ngIf="isLoading">
+                    <i class="fa fa-spinner fa-spin me-2"></i> Đang xử lý...
+                  </span>
+                </button>    
+                
+                <!-- Nút mở modal tìm khách -->
+                <a class="btn btn-info mt-3 ms-2" href="/bookings">Thoát</a>
+
+                <!-- Overlay loading toàn trang -->
+                <div class="loading-overlay" *ngIf="isLoading">
+                  <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Đang xử lý...</span>
+                  </div>
+                </div>
+
               </div>
             </div>
           </div>

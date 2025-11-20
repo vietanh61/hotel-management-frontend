@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { SearchService } from '../../services/search.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';  // Import Toastr
 
 @Component({
@@ -10,13 +10,23 @@ import { ToastrService } from 'ngx-toastr';  // Import Toastr
 })
 
 export class SearchComponent {
+  bookingId: number | null = null;  // Biến để nhận BookingId từ URL
   checkIn: string = new Date().toISOString().split('T')[0];  // Default hôm nay
   checkOut: string = new Date(Date.now() + 86400000).toISOString().split('T')[0];  // Default mai
   rooms: any[] = [];
   selectedRooms: any[] = [];
 
-  constructor(private searchService: SearchService, private router: Router,private toastr: ToastrService) { }
-
+  constructor(
+    private searchService: SearchService, 
+    private router: Router,
+    private toastr: ToastrService,
+    private route: ActivatedRoute
+  ) { }
+  ngOnInit(): void {
+    // Lấy BookingId từ query param trên URL (e.g., /search?bookingId=123)
+    this.bookingId = +this.route.snapshot.queryParamMap.get('bookingId')! || null;
+    console.log('BookingId từ URL:', this.bookingId);  // Debug
+  }
   search() {
     if (!this.checkIn || !this.checkOut || new Date(this.checkIn) >= new Date(this.checkOut)) {
       //alert('Vui lòng chọn ngày hợp lệ');
@@ -60,7 +70,12 @@ export class SearchComponent {
     };
     // Lưu vào localStorage để persist qua reload
     localStorage.setItem('bookingState', JSON.stringify(state));
-    this.router.navigate(['/create-booking'], { state });
+    // Nếu có BookingId, chuyển sang edit-booking với query param và state thêm phòng
+    if (this.bookingId) {
+      this.router.navigate(['/edit-booking'], { queryParams: { bookingId: this.bookingId }, state });
+    } else {
+      this.router.navigate(['/create-booking'], { state });
+    }
   }
 
 }
