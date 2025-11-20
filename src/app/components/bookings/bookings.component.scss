@@ -6,3 +6,6 @@
 .row-canceled .dx-datagrid-content td {
   background-color: #ffcccc !important;
 }
+:host ::ng-deep .dx-header-row > td[role="columnheader"] > div.dx-datagrid-text-content {
+    font-weight: bold;
+}

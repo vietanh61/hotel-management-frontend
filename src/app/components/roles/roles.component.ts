@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RoleService } from '../../services/role.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-roles',
@@ -9,7 +10,10 @@ import { RoleService } from '../../services/role.service';
 export class RolesComponent implements OnInit {
   roles: any[] = [];
 
-  constructor(private roleService: RoleService) { }
+  constructor(
+    private roleService: RoleService,
+    private toastr: ToastrService
+  ) { }
 
   ngOnInit(): void {
     this.loadRoles();
@@ -20,7 +24,7 @@ export class RolesComponent implements OnInit {
       if (response.code === 200) {
         this.roles = response.data;
       } else {
-        alert(response.name);
+        this.toastr.error(response.name, 'Lỗi');
       }
     });
   }
@@ -30,7 +34,7 @@ export class RolesComponent implements OnInit {
       if (response.code === 201) {
         this.loadRoles();
       } else {
-        alert('Lỗi: ' + response.name);
+        this.toastr.error(response.name, 'Lỗi');
       }
     });
   }
@@ -41,7 +45,7 @@ export class RolesComponent implements OnInit {
       if (response.code === 200) {
         this.loadRoles();
       } else {
-        alert('Lỗi: ' + response.name);
+        this.toastr.error(response.name, 'Lỗi');
       }
     });
   }
@@ -51,7 +55,7 @@ export class RolesComponent implements OnInit {
       if (response.code === 200) {
         this.loadRoles();
       } else {
-        alert('Lỗi: ' + response.name);
+        this.toastr.error(response.name, 'Lỗi');
       }
     });
   }

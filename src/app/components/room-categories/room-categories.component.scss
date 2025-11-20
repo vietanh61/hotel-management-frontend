@@ -8,3 +8,6 @@
     font-size: 12px;  // Adjust for mobile
   }
 }
+:host ::ng-deep .dx-header-row > td[role="columnheader"] > div.dx-datagrid-text-content {
+    font-weight: bold;
+}

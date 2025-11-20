@@ -121,7 +121,7 @@ export class CreateBookingComponent implements OnInit {
     }
     this.calculateTotal();
   }
-/** Tính số đêm ở */
+  /** Tính số đêm ở */
   private getNumberOfNights(): number {
     if (!this.booking.checkIn || !this.booking.checkOut) return 1;
     const checkIn  = new Date(this.booking.checkIn);

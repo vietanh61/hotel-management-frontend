@@ -140,6 +140,7 @@
                   (onRowUpdated)="onExtraRowUpdated($event)"
                   (onEditingStart)="onEditingStart($event)"
                   (onEditorPreparing)="onEditorPreparing($event)"
+                  class="my-bold-header-grid"
                   >
                   <dxo-editing 
                     mode="cell" 
@@ -235,7 +236,8 @@
                 </span>
               </button>
 
-              <a class="btn btn-info mt-3 ms-2" href="/bookings">Thoát</a>
+              <a class="btn btn-info mt-3 ms-2" href="/search">Tìm phòng</a>
+              <a class="btn btn-warning mt-3 ms-2" href="/bookings">Danh sách Booking</a>
               <!-- Overlay loading toàn trang -->
               <div class="loading-overlay" *ngIf="isLoading">
                 <div class="spinner-border text-primary" role="status">
