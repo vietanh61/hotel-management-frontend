@@ -35,31 +35,31 @@
               </div>
               <div class="card-body">
                 <dx-data-grid
-          id="gridContainer"
-          [dataSource]="hotels"
-          [showBorders]="true"
-          [remoteOperations]="false"
-          [allowColumnReordering]="true"
-          [allowColumnResizing]="true"
-          [columnAutoWidth]="true"
-          (onRowInserted)="onRowInserted($event)"
-          (onRowUpdating)="onRowUpdating($event)"
-          (onRowRemoving)="onRowRemoving($event)">
+                  id="gridContainer"
+                  [dataSource]="hotels"
+                  [showBorders]="true"
+                  [remoteOperations]="false"
+                  [allowColumnReordering]="true"
+                  [allowColumnResizing]="true"
+                  [columnAutoWidth]="true"
+                  (onRowInserted)="onRowInserted($event)"
+                  (onRowUpdating)="onRowUpdating($event)"
+                  (onRowRemoving)="onRowRemoving($event)">
 
-          <dxo-editing
-            mode="popup"
-            [allowUpdating]="true"
-            [allowDeleting]="true"
-            [allowAdding]="true">
-          </dxo-editing>
+                  <dxo-editing
+                    mode="popup"
+                    [allowUpdating]="true"
+                    [allowDeleting]="true"
+                    [allowAdding]="true">
+                  </dxo-editing>
 
-          <dxi-column dataField="name" caption="Tên"></dxi-column>
-          <dxi-column dataField="address" caption="Địa chỉ"></dxi-column>
-          <dxi-column dataField="phone" caption="SĐT"></dxi-column>
-          <dxi-column dataField="email" caption="Email"></dxi-column>
-          <dxi-column dataField="description" caption="Mô tả"></dxi-column>
+                  <dxi-column dataField="name" caption="Tên"></dxi-column>
+                  <dxi-column dataField="address" caption="Địa chỉ"></dxi-column>
+                  <dxi-column dataField="phone" caption="SĐT"></dxi-column>
+                  <dxi-column dataField="email" caption="Email"></dxi-column>
+                  <dxi-column dataField="description" caption="Mô tả"></dxi-column>
 
-        </dx-data-grid>
+                </dx-data-grid>
               </div>
               <!-- /.card-body -->
               <div class="card-footer">

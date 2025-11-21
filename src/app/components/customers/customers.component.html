@@ -1,0 +1,74 @@
+<!-- src/app/components/bookings/bookings.component.html -->
+ <section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1>Danh sách Khách hàng</h1>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a href="#">Home</a></li>
+          <li class="breadcrumb-item active">Danh sách Khách hàng</li>
+        </ol>
+      </div>
+    </div>
+  </div><!-- /.container-fluid -->
+</section>
+<section class="content">
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Danh sách</h3>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+              <i class="fas fa-minus"></i>
+            </button>
+            <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <dx-data-grid
+            id="gridContainer"
+            [dataSource]="customers"
+            [showBorders]="true"
+            [remoteOperations]="false"
+            [allowColumnReordering]="true"
+            [allowColumnResizing]="true"
+            [columnAutoWidth]="true"
+            (onRowInserted)="onRowInserted($event)"
+            (onRowUpdating)="onRowUpdating($event)"
+            (onRowRemoving)="onRowRemoving($event)">
+            <dxo-editing
+                mode="popup"
+                [allowUpdating]="true"
+                [allowDeleting]="true"
+                [allowAdding]="true">
+            </dxo-editing>
+            <dxi-column dataField="fullName" caption="Khách hàng" ></dxi-column>
+            <dxi-column dataField="email" caption="Email" ></dxi-column>
+            <dxi-column dataField="phone" caption="Số điện thoại"></dxi-column>
+            <dxi-column dataField="address" caption="Địa chỉ" ></dxi-column>
+            <dxi-column dataField="idNumber" caption="Căn cước/CMT"></dxi-column>
+            <dxi-column dataField="notes" caption="Ghi chú" ></dxi-column>
+            
+            <dxo-selection mode="single"></dxo-selection>
+            <dxo-filter-row [visible]="true"></dxo-filter-row>
+            <dxo-scrolling rowRenderingMode="virtual"> </dxo-scrolling>
+            <dxo-paging [pageSize]="10"> </dxo-paging>
+            <dxo-pager
+              [visible]="true"
+              [showPageSizeSelector]="showPageSizeSelector"
+              [showInfo]="showInfo"
+              [showNavigationButtons]="showNavButtons">
+            </dxo-pager>
+          </dx-data-grid>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

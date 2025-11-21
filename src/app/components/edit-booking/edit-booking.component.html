@@ -228,7 +228,7 @@
                     <dxi-column type="selection"></dxi-column>
                     <dxi-column dataField="roomNumber" caption="Phòng"></dxi-column>
                     <dxi-column dataField="category.name" caption="Hạng phòng"></dxi-column>
-                    <dxi-column dataField="pricePerNight" caption="Giá/đêm"></dxi-column>
+                    <dxi-column dataField="pricePerNight" caption="Giá/đêm" format='#,##0'></dxi-column>
                     <dxi-column dataField="status.name" caption="Trạng thái"></dxi-column>
                   </dx-data-grid>
 
@@ -249,7 +249,7 @@
                 </dx-popup>
               </div>
               <div class="=row">
-                <button class="btn btn-success mt-3" (click)="submitBooking()" [disabled]="this.booking.statusId===4 || this.booking.statusId===5">
+                <button class="btn btn-success mt-3" (click)="submitBooking()">
                   <span *ngIf="!isLoading">Lưu booking</span>
                   <span *ngIf="isLoading">
                     <i class="fa fa-spinner fa-spin me-2"></i> Đang xử lý...
@@ -257,7 +257,7 @@
                 </button>    
                 
                 <!-- Nút mở modal tìm khách -->
-                <a class="btn btn-info mt-3 ms-2" href="/bookings">Thoát</a>
+                <a class="btn btn-info mt-3 ms-2" href="/bookings">Danh sách booking</a>
 
                 <!-- Overlay loading toàn trang -->
                 <div class="loading-overlay" *ngIf="isLoading">

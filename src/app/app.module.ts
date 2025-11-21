@@ -23,10 +23,9 @@ import { BookingsComponent } from './components/bookings/bookings.component';
 import { EditBookingComponent } from './components/edit-booking/edit-booking.component';
 import { PricePeriodsComponent } from './components/price-periods/price-periods.component';
 import { ExtrasComponent } from './components/extras/extras.component';
-
 import { DevExtremeModule } from './devextreme.module'; // đường dẫn chỉnh cho đúng
-
 import { DxTemplateModule } from 'devextreme-angular';
+import { CustomersComponent } from './components/customers/customers.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +44,8 @@ import { DxTemplateModule } from 'devextreme-angular';
     BookingsComponent,
     EditBookingComponent,
     PricePeriodsComponent,
-    ExtrasComponent
+    ExtrasComponent,
+    CustomersComponent
   ],
   imports: [
     BrowserModule,

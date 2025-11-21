@@ -44,7 +44,7 @@
             <dxi-column type="selection"></dxi-column> <!-- Checkbox -->
             <dxi-column dataField="roomNumber" caption="Phòng"></dxi-column>
             <dxi-column dataField="categoryName" caption="Hạng phòng"></dxi-column>
-            <dxi-column dataField="pricePerNight" caption="Giá mỗi đêm"></dxi-column>
+            <dxi-column dataField="pricePerNight" caption="Giá mỗi đêm" format='#,##0'></dxi-column>
             <dxi-column dataField="status" caption="Trạng thái"></dxi-column>
           </dx-data-grid>
           <button class="btn btn-success mt-2" (click)="proceedToBooking()" [disabled]="selectedRooms.length === 0">Đặt phòng đã chọn</button>
