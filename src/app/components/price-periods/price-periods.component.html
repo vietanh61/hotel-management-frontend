@@ -41,7 +41,8 @@
                     [columnAutoWidth]="true"
                     (onRowInserted)="onRowInserted($event)"
                     (onRowUpdating)="onRowUpdating($event)"
-                    (onRowRemoving)="onRowRemoving($event)">
+                    (onRowRemoving)="onRowRemoving($event)"
+                    (onInitNewRow)="onInitNewRow($event)">
                     <dxo-editing
                         mode="popup"
                         [allowUpdating]="true"

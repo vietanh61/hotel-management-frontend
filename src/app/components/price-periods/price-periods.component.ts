@@ -78,12 +78,13 @@ export class PricePeriodsComponent implements OnInit {
 
   onRowUpdating(event: any) {
     const updatedData = { ...event.oldData, ...event.newData };
-    if (!event.data.hotelId) {
+    if (!updatedData.hotelId) {
       //alert('Vui lòng chọn khách sạn');
       this.toastr.error('Vui lòng chọn khách sạn', 'Thông báo');
       event.cancel = true;
       return;
     }
+
     this.pricePeriodService.updatePricePeriod(event.oldData.id, updatedData).subscribe(response => {
       if (response.code === 200) {
         this.loadPricePeriods();

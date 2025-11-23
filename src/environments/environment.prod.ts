@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://localhost:5266/api'  // Thay bằng URL API HotelManagementApi của bạn
+  apiUrl: 'http://103.167.89.87:5000/api'  // Thay bằng URL API HotelManagementApi của bạn
 };
