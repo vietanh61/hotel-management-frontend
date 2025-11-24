@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
+import { ToastrService } from 'ngx-toastr';  // Import Toastr
+import { HotelService } from 'src/app/services/hotel.service';
+import { RoleService } from 'src/app/services/role.service';
 
 @Component({
   selector: 'app-users',
@@ -8,11 +11,19 @@ import { UserService } from '../../services/user.service';
 })
 export class UsersComponent implements OnInit {
   users: any[] = [];
-
-  constructor(private userService: UserService) { }
+  hotels: any[] = [];  // Danh sách khách sạn cho dropdown
+  roles: any[] = [];  // Danh sách khách sạn cho dropdown
+  constructor(
+    private userService: UserService,
+    private hotelService: HotelService,
+    private roleService: RoleService,
+    private toastr: ToastrService
+  ) { }
 
   ngOnInit(): void {
     this.loadUsers();
+    this.loadRoles();
+    this.loadHotels();
   }
 
   loadUsers() {
@@ -24,24 +35,62 @@ export class UsersComponent implements OnInit {
       }
     });
   }
+  loadHotels() {
+    this.hotelService.getHotels().subscribe(response => {
+      if (response.code === 200) {
+        this.hotels = response.data;
+      } else {
+        this.toastr.error(response.name, 'Thông báo');
+      }
+    });
+  }
+  loadRoles() {
+    this.roleService.getRoles().subscribe(response => {
+      if (response.code === 200) {
+        this.roles = response.data;
+      } else {
+        this.toastr.error(response.name, 'Thông báo');
+      }
+    });
+  }
+  onInitNewRow(event: any) {
+    event.data.hotelId = this.hotels.length > 0 ? this.hotels[0].id : null;  // Default to first hotel if available
+    event.data.roleId = this.roles.length > 0 ? this.roles[0].id : null;  // Default to first hotel if available
+  }
+  onRowInserting(event: any) {
+    if (!event.data.hotelId) {
+      this.toastr.error('Vui lòng chọn khách sạn', 'Thông báo');
+      event.cancel = true; // NGĂN popup đóng
+      return;
+    }
 
-  onRowInserted(event: any) {
     this.userService.createUser(event.data).subscribe(response => {
       if (response.code === 201) {
         this.loadUsers();
       } else {
-        alert('Lỗi: ' + response.name);
+        this.toastr.error(response.name, 'Thông báo');
       }
     });
   }
 
   onRowUpdating(event: any) {
     const updatedData = { ...event.oldData, ...event.newData };
+    if (!updatedData.hotelId) {
+      this.toastr.error('Vui lòng chọn khách sạn', 'Thông báo');
+      event.cancel = true; // KHÔNG cho popup đóng
+      return;
+    }
+
+    if (!updatedData.roleId) {
+      this.toastr.error('Vui lòng chọn đơn vị tính', 'Thông báo');
+      event.cancel = true;
+      return;
+    }
     this.userService.updateUser(event.oldData.id, updatedData).subscribe(response => {
       if (response.code === 200) {
         this.loadUsers();
       } else {
-        alert('Lỗi: ' + response.name);
+        this.toastr.error(response.name, 'Thông báo');
       }
     });
   }
@@ -51,7 +100,7 @@ export class UsersComponent implements OnInit {
       if (response.code === 200) {
         this.loadUsers();
       } else {
-        alert('Lỗi: ' + response.name);
+        this.toastr.error(response.name, 'Thông báo');
       }
     });
   }

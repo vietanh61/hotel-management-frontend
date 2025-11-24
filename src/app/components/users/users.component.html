@@ -10,9 +10,10 @@
         [allowColumnReordering]="true"
         [allowColumnResizing]="true"
         [columnAutoWidth]="true"
-        (onRowInserted)="onRowInserted($event)"
+        (onRowInserting)="onRowInserting($event)"
         (onRowUpdating)="onRowUpdating($event)"
-        (onRowRemoving)="onRowRemoving($event)">
+        (onRowRemoving)="onRowRemoving($event)"
+        (onInitNewRow)="onInitNewRow($event)">
 
         <dxo-editing
           mode="popup"
@@ -24,8 +25,20 @@
         <dxi-column dataField="username" caption="Tên đăng nhập"></dxi-column>
         <dxi-column dataField="fullName" caption="Họ tên"></dxi-column>
         <dxi-column dataField="email" caption="Email"></dxi-column>
-        <dxi-column dataField="role.name" caption="Vai trò"></dxi-column>
-        <dxi-column dataField="hotel.name" caption="Khách sạn"></dxi-column>
+        <dxi-column dataField="roleId" caption="Vai trò">
+          <dxo-lookup
+              [dataSource]="roles"
+              valueExpr="id"
+              displayExpr="name">
+          </dxo-lookup>
+        </dxi-column>
+        <dxi-column dataField="hotelId" caption="Khách sạn">
+          <dxo-lookup
+              [dataSource]="hotels"
+              valueExpr="id"
+              displayExpr="name">
+          </dxo-lookup>
+        </dxi-column>
         <dxi-column dataField="lastLogin" caption="Lần đăng nhập cuối" [dataType]="'date'"></dxi-column>
 
       </dx-data-grid>

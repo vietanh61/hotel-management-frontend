@@ -26,6 +26,7 @@ import { ExtrasComponent } from './components/extras/extras.component';
 import { DevExtremeModule } from './devextreme.module'; // đường dẫn chỉnh cho đúng
 import { DxTemplateModule } from 'devextreme-angular';
 import { CustomersComponent } from './components/customers/customers.component';
+import { UserRolesComponent } from './components/user-roles/user-roles.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { CustomersComponent } from './components/customers/customers.component';
     EditBookingComponent,
     PricePeriodsComponent,
     ExtrasComponent,
-    CustomersComponent
+    CustomersComponent,
+    UserRolesComponent
   ],
   imports: [
     BrowserModule,

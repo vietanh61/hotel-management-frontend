@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CustomerService } from '../../services/customer.service';
 import { ToastrService } from 'ngx-toastr';
-import { ActivatedRoute, Router } from '@angular/router';
-
 
 @Component({
   selector: 'app-customers',
@@ -21,8 +19,6 @@ export class CustomersComponent implements OnInit {
   showNavButtons = true;
 
   constructor(
-    private router: Router,
-    private route: ActivatedRoute,
     private toastr: ToastrService,
     private customerService: CustomerService,
   ) { }

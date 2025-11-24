@@ -14,6 +14,7 @@ import { EditBookingComponent } from './components/edit-booking/edit-booking.com
 import { PricePeriodsComponent } from './components/price-periods/price-periods.component';
 import { ExtrasComponent } from './components/extras/extras.component';
 import { CustomersComponent } from './components/customers/customers.component';
+import { UserRolesComponent } from './components/user-roles/user-roles.component';
 
 
 const routes: Routes = [
@@ -34,6 +35,7 @@ const routes: Routes = [
       { path: 'price-periods', component: PricePeriodsComponent,canActivate: [AuthGuard] },
       { path: 'extras', component: ExtrasComponent,canActivate: [AuthGuard] },
       { path: 'customers', component: CustomersComponent,canActivate: [AuthGuard] },
+      { path: 'user-roles', component: UserRolesComponent,canActivate: [AuthGuard] },
   ] 
   },
   {
