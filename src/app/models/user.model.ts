@@ -15,12 +15,12 @@ export interface User {
   hotelId?: number;
   email?: string;
   lastLogin?: Date;
-  role?: Role;
+  userRoles?: UserRole[];
   hotel?: Hotel;
 
   // Các trường dùng phía client (optional)
-  userRoles?: UserRole[];   // nếu backend trả danh sách userRoles
-  roles?: number[];         // mảng roleId rút gọn để bind checkbox/select
+  roleIds?: number[];     // Để binding popup
+  roleNames?: string[];   // Để hiển thị ở grid
 }
 
 export interface ApiResponse<T> {

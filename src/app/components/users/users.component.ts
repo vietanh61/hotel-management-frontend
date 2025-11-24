@@ -81,11 +81,6 @@ export class UsersComponent implements OnInit {
       return;
     }
 
-    if (!updatedData.roleId) {
-      this.toastr.error('Vui lòng chọn đơn vị tính', 'Thông báo');
-      event.cancel = true;
-      return;
-    }
     this.userService.updateUser(event.oldData.id, updatedData).subscribe(response => {
       if (response.code === 200) {
         this.loadUsers();

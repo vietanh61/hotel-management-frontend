@@ -13,7 +13,7 @@ import { ApiResponse, User, UserRole } from '../../models/user.model';
 export class UserRolesComponent implements OnInit {
   users: any[] = [];
   allRoles: any[] = [];
-  currentUser: any = {};
+  selectedUser: any = {};
   selectedRoleIds: number[] = [];
   showRolePopup: boolean = false;
 
@@ -27,51 +27,83 @@ export class UserRolesComponent implements OnInit {
     this.loadUsers();
     this.loadRoles();
   }
+  // gọi sau khi allRoles load xong
+  private remapRoleNames() {
+    if (!this.users || !this.allRoles) return;
 
+    this.users = this.users.map((u: User) => {
+      const roleIds = (u.userRoles || []).map((r: UserRole) =>
+        typeof r.roleId === 'string' ? Number(r.roleId) : r.roleId
+      );
+
+      const roleNames = this.allRoles
+        .filter(role => roleIds.includes(role.id))
+        .map(role => role.name);
+
+      return {
+        ...u,
+        roleIds,
+        roleNames
+      };
+    });
+  }
   loadUsers() {
     this.userService.getUsers().subscribe(response => {
       if (response.code === 200) {
 
-        this.users = response.data.map((u: User) => ({
-          ...u,
-          roles: u.userRoles?.map((r: UserRole) => r.roleId) || []
-        }));
+        this.users = response.data.map((u: User) => {
+          const roleIds = u.userRoles?.map((r: UserRole) => r.roleId) || [];
+
+          // Map roleId → roleName bằng danh sách allRoles
+          const roleNames = this.allRoles
+            .filter(role => roleIds.includes(role.id))
+            .map(role => role.name);
+
+          return {
+            ...u,
+            roleIds,
+            roleNames
+          };
+        });
 
       } else {
         this.toastr.error(response.name, 'Lỗi');
       }
     });
   }
-
   loadRoles() {
     this.roleService.getRoles().subscribe(response => {
       if (response.code === 200) {
         this.allRoles = response.data;
+        // Khi roles đã load → remap lại users
+        this.remapRoleNames();
       } else {
         this.toastr.error(response.name, 'Lỗi');
       }
     });
   }
 
-  openRoleModal(user: any) {
-    this.currentUser = user;
-    this.selectedRoleIds = user.roleIds || [];  // Load roles hiện tại
-    this.showRolePopup = true;
+  openRoleModal(user: User) {
+  this.selectedUser = user;
+  this.selectedRoleIds = [...(user.roleIds || [])]; // Clone mảng
+  this.showRolePopup = true;
+}
+
+  onRoleSelectionChanged(e: any) {
+    this.selectedRoleIds = e.value;  // Chỉ là danh sách ID
   }
 
-  onRoleSelectionChanged(event: any) {
-    this.selectedRoleIds = event.selectedRowKeys;
-  }
-
-  saveUserRoles() {
-    this.userService.updateUserRoles(this.currentUser.id, this.selectedRoleIds).subscribe(response => {
-      if (response.code === 200) {
-        this.toastr.success('Cập nhật roles thành công', 'Thành công');
-        this.loadUsers();
-      } else {
-        this.toastr.error(response.name, 'Lỗi');
-      }
-      this.showRolePopup = false;
-    });
+  saveRoles() {
+    this.userService.updateUserRoles(this.selectedUser.id, this.selectedRoleIds)
+      .subscribe({
+        next: res => {
+          this.toastr.success("Cập nhật role thành công");
+          this.showRolePopup = false;
+          this.loadUsers(); // Reload lại grid
+        },
+        error: err => {
+          this.toastr.error("Cập nhật thất bại");
+        }
+      });
   }
 }

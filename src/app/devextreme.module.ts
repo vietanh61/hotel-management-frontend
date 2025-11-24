@@ -8,7 +8,8 @@ import {
   DxFormModule,
   DxTemplateModule,
   DxSelectBoxModule,
-  DxNumberBoxModule
+  DxNumberBoxModule,
+  DxTagBoxModule
 } from 'devextreme-angular';
 
 @NgModule({
@@ -20,7 +21,8 @@ import {
     DxFormModule,
     DxTemplateModule,
     DxSelectBoxModule,
-    DxNumberBoxModule
+    DxNumberBoxModule,
+    DxTagBoxModule
   ]
 })
 export class DevExtremeModule { }

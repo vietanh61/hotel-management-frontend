@@ -1,35 +1,88 @@
-<div class="container mt-4">
-  <h2>Quản lý User Roles</h2>
-  <dx-data-grid
-    [dataSource]="users"
-    [showBorders]="true"
-    [allowColumnReordering]="true"
-    [allowColumnResizing]="true"
-    [columnAutoWidth]="true">
-
-    <dxi-column dataField="username" caption="Tên đăng nhập"></dxi-column>
-    <dxi-column dataField="fullName" caption="Họ tên"></dxi-column>
-    <dxi-column dataField="roles" caption="Vai trò" [allowEditing]="false" cellTemplate="rolesTemplate"></dxi-column>
-    <dxi-column caption="Hành động" cellTemplate="actionTemplate"></dxi-column>
-
-    <!-- Template hiển thị roles -->
-    <div *dxTemplate="let data of 'rolesTemplate'">
-      {{ data.data.roles?.join(', ') || 'Chưa có role' }}
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1>Quản lý Vai trò</h1>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a href="#">Home</a></li>
+          <li class="breadcrumb-item active">Quản lý Vai trò</li>
+        </ol>
+      </div>
     </div>
+  </div><!-- /.container-fluid -->
+</section>
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <!-- Default box -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Danh sách</h3>
+            <div class="card-tools">
+              <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                <i class="fas fa-minus"></i>
+              </button>
+              <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <dx-data-grid
+              [dataSource]="users"
+              [showBorders]="true"
+              [allowColumnResizing]="true"
+              [columnAutoWidth]="true">
 
-    <!-- Template nút quản lý -->
-    <div *dxTemplate="let data of 'actionTemplate'">
-      <dx-button text="Quản lý Roles" (onClick)="openRoleModal(data.data)"></dx-button>
+              <dxi-column dataField="username" caption="Tên đăng nhập"></dxi-column>
+              <dxi-column dataField="fullName" caption="Họ tên"></dxi-column>
+
+              <dxi-column caption="Vai trò" cellTemplate="rolesTemplate"></dxi-column>
+
+              <dxi-column caption="Hành động" cellTemplate="actionTemplate"></dxi-column>
+
+              <!-- Template hiển thị roleNames -->
+              <div *dxTemplate="let data of 'rolesTemplate'">
+                {{ data.data.roleNames?.join(', ') || 'Chưa có role' }}
+              </div>
+
+              <!-- Template nút -->
+              <div *dxTemplate="let data of 'actionTemplate'">
+                <dx-button
+                  text="Quản lý Roles"
+                  type="default"
+                  (onClick)="openRoleModal(data.data)">
+                </dx-button>
+              </div>
+
+            </dx-data-grid>
+
+            <!-- POPUP CHỌN ROLE -->
+            <dx-popup
+              [(visible)]="showRolePopup"
+              [width]="500"
+              [height]="400"
+              title="Quản lý Roles">
+
+              <div class="p-3">
+                <dx-tag-box
+                  [dataSource]="allRoles"
+                  displayExpr="name"
+                  valueExpr="id"
+                  [value]="selectedRoleIds"
+                  (onValueChanged)="onRoleSelectionChanged($event)">
+                </dx-tag-box>
+
+                <button class="btn btn-primary mt-3" (click)="saveRoles()">Lưu</button>
+              </div>
+
+            </dx-popup>
+          </div>
+        </div>
+      </div>
     </div>
-  </dx-data-grid>
-
-  <!-- Popup quản lý roles -->
-  <dx-popup [visible]="showRolePopup" title="Quản lý Roles cho {{ currentUser.username }}" (onHiding)="showRolePopup = false">
-    <dx-data-grid [dataSource]="allRoles" [selectedRowKeys]="selectedRoleIds" (onSelectionChanged)="onRoleSelectionChanged($event)">
-      <dxo-selection mode="multiple"></dxo-selection>
-      <dxi-column dataField="name" caption="Vai trò"></dxi-column>
-      <dxi-column dataField="description" caption="Mô tả"></dxi-column>
-    </dx-data-grid>
-    <button class="btn btn-success mt-2" (click)="saveUserRoles()">Lưu</button>
-  </dx-popup>
-</div>
+  </div>
+</section>

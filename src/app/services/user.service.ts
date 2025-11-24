@@ -33,6 +33,6 @@ export class UserService {
     return this.http.delete<any>(`${this.apiUrl}/${id}`);
   }
   updateUserRoles(userId: number, roleIds: number[]): Observable<any> {
-  return this.http.put<any>(`${this.apiUrl}/${userId}/roles`, { roleIds });
-}
+    return this.http.put<any>(`${this.apiUrl}/${userId}/roles`, { roleIds });
+  }
 }
