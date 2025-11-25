@@ -25,12 +25,13 @@ export class LoginComponent implements OnInit, OnDestroy {
       return;
     }
     this.authService.login(this.username, this.password).subscribe(response => {
-      this.authService.saveToken(response.token);
+      this.authService.saveToken(response.data.token);
+      this.authService.setCurrentUser(response.data.user);  // ← Lưu user
       this.toastr.success('Đăng nhập thành công','Thông báo');
       this.router.navigate(['/']);
     }, error => {
       //alert('Thông báo đăng nhập');
-      this.toastr.error('Thông báo đăng nhập','Thông báo');
+      this.toastr.error('Đã xảy ra lỗi','Thông báo');
       
     });
   }

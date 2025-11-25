@@ -28,3 +28,14 @@ export interface ApiResponse<T> {
   name: string;
   data: T;
 }
+
+// models/current-user.model.ts
+export interface CurrentUser {
+  id: number;
+  username: string;
+  fullName: string;
+  email?: string;
+  hotelId: number;
+  hotelName: string;
+  roles: string[];
+}
