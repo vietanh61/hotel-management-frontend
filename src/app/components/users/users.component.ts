@@ -13,6 +13,13 @@ export class UsersComponent implements OnInit {
   users: any[] = [];
   hotels: any[] = [];  // Danh sách khách sạn cho dropdown
   roles: any[] = [];  // Danh sách khách sạn cho dropdown
+   // ---- Popup Update Password ----
+  showPasswordPopup: boolean = false;
+  selectedUser: any = null;
+  currentPassword: string = "";
+  newPassword: string = "";
+  confirmPassword: string = "";
+
   constructor(
     private userService: UserService,
     private hotelService: HotelService,
@@ -98,5 +105,66 @@ export class UsersComponent implements OnInit {
         this.toastr.error(response.name, 'Thông báo');
       }
     });
+  }
+
+
+  // ============================================================
+  //                UPDATE PASSWORD POPUP
+  // ============================================================
+
+  openPasswordPopup(user: any) {
+    this.selectedUser = user;
+    this.currentPassword = "";
+    this.newPassword = "";
+    this.confirmPassword = "";
+    this.showPasswordPopup = true;
+  }
+
+  closePopup() {
+    this.showPasswordPopup = false;
+  }
+
+  savePasswordChange() {
+    if (!this.newPassword || !this.confirmPassword) {
+      this.toastr.error("Vui lòng nhập mật khẩu mới!", "Lỗi");
+      return;
+    }
+
+    if (this.newPassword !== this.confirmPassword) {
+      this.toastr.error("Mật khẩu mới không trùng khớp!", "Lỗi");
+      return;
+    }
+
+    const req = {
+      userId: this.selectedUser.id,
+      newPassword: this.newPassword
+    };
+    console.log(this.selectedUser);
+    this.userService.updatePassword(req.userId, req.newPassword).subscribe({
+      next: (res: any) => {
+      if (res.code === 200) {
+        this.toastr.success("Cập nhật mật khẩu thành công!");
+        this.showPasswordPopup = false;
+      } else {
+        this.toastr.error(res.name, "Lỗi");
+      }
+    },
+    error: (err) => {
+        console.error(err);
+        // Xử lý lỗi 403 Forbidden
+        if (err.status === 403) {
+          this.toastr.error(
+            err.error?.message || "Bạn không có quyền thực hiện hành động này",
+            "403 - Forbidden"
+          );
+          return;
+        }
+        // Xử lý lỗi khác
+        this.toastr.error(
+          err.error?.name || "Lỗi không xác định",
+          `Lỗi ${err.status}`
+        );
+      }
+  });
   }
 }

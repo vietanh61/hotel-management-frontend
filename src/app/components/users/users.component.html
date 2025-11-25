@@ -52,7 +52,7 @@
               </dxo-editing>
 
               <dxi-column dataField="username" caption="Tên đăng nhập"></dxi-column>
-              <dxi-column dataField="passwordHash" caption="Mật khẩu"></dxi-column>
+              <!-- <dxi-column dataField="passwordHash" caption="Mật khẩu"></dxi-column> -->
               <dxi-column dataField="fullName" caption="Họ tên"></dxi-column>
               <dxi-column dataField="email" caption="Email"></dxi-column>
               <dxi-column dataField="hotelId" caption="Khách sạn">
@@ -64,7 +64,42 @@
               </dxi-column>
               <dxi-column dataField="lastLogin" caption="Lần đăng nhập cuối" [dataType]="'date'"></dxi-column>
 
+              <dxi-column caption="Hành động" cellTemplate="actionTemplate"></dxi-column>
+
+              <div *dxTemplate="let data of 'actionTemplate'">
+                <dx-button 
+                  icon="key"
+                  type="default"
+                  (onClick)="openPasswordPopup(data.data)"
+                >
+                </dx-button>
+              </div>
             </dx-data-grid>
+            <dx-popup
+              [(visible)]="showPasswordPopup"
+              [width]="800"
+              [height]="600"
+              title="Cập nhật mật khẩu">
+              <div class="p-3">
+                <div class="form-group mt-2">
+                    <label>Mật khẩu mới</label>
+                    <input type="password" class="form-control" [(ngModel)]="newPassword">
+                </div>
+
+                <div class="form-group mt-2">
+                    <label>Nhập lại mật khẩu mới</label>
+                    <input type="password" class="form-control" [(ngModel)]="confirmPassword">
+                </div>
+
+                <button class="btn btn-primary mt-3" (click)="savePasswordChange()">
+                  Lưu thay đổi
+                </button>
+
+                <button class="btn btn-secondary mt-3 ms-3" (click)="closePopup()">
+                  Hủy
+                </button>
+              </div>
+            </dx-popup>
           </div>
         </div>
       </div>
