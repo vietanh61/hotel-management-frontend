@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { ApiResponse, User } from '../models/user.model';
@@ -35,4 +35,13 @@ export class UserService {
   updateUserRoles(userId: number, roleIds: number[]): Observable<any> {
     return this.http.put<any>(`${this.apiUrl}/${userId}/roles`, { roleIds });
   }
+  updatePassword(userId: number, newPassword:string): Observable<any> {
+    const body = {
+      newPassword
+    };
+    return this.http.put<any>(`${this.apiUrl}/${userId}/update-password`, body );
+  }
+  
 }
+
+
