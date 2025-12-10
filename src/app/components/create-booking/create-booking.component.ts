@@ -297,7 +297,15 @@ export class CreateBookingComponent implements OnInit {
 
   proceedWithBooking(customerId: number) {
     this.booking.customerId = customerId;
-    const payload = { booking: this.booking, details: this.details, extras: this.extras };
+    const payload = { 
+      booking: 
+      {
+        ... this.booking,
+        checkIn: this.booking.checkIn,   // đã là yyyy-MM-dd
+        checkOut: this.booking.checkOut  // đã là yyyy-MM-dd
+      }, 
+      details: this.details, 
+      extras: this.extras };
     this.bookingService.createBookingWithDetails(payload).subscribe({
       next: (response: any) => {
         this.isLoading = false; // tắt trạng thái loading

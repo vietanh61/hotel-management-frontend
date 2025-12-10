@@ -5,6 +5,7 @@ import { BookingStatusService } from '../../services/booking-status.service';
 import { PaymentMethodService } from '../../services/payment-method.service';
 import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute, Router } from '@angular/router';
+import { HotelService } from 'src/app/services/hotel.service';
 
 @Component({
   selector: 'app-bookings',
@@ -18,6 +19,7 @@ export class BookingsComponent implements OnInit {
   paymentMethods: any[] = [];
   showDetailModal: boolean = false;
   selectedBooking: any = null;
+  hotels: any[] = [];  // Danh sách khách sạn cho dropdown
 
   readonly allowedPageSizes = [5, 10, 'all'];
   readonly displayModes = [{ text: "Display Mode 'full'", value: 'full' }, { text: "Display Mode 'compact'", value: 'compact' }];
@@ -35,13 +37,17 @@ export class BookingsComponent implements OnInit {
     private bookingService: BookingService,
     private bookingStatusService: BookingStatusService,
     private paymentMethodService: PaymentMethodService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private hotelService: HotelService,
+
   ) { }
 
   ngOnInit(): void {
     this.loadBookings();
     this.loadBookingStatuses();
     this.loadPaymentMethods();
+    this.loadHotel();  // Load hotels cho dropdown
+
   }
 
   loadBookings() {
@@ -81,7 +87,15 @@ export class BookingsComponent implements OnInit {
   openDetail(booking: any) {
     this.router.navigate(['/edit-booking'], { queryParams: { bookingId: booking.id } });
   }
- 
+ loadHotel() {
+    this.hotelService.getHotels().subscribe(response => {
+      if (response.code === 200) {
+        this.hotels = response.data;
+      } else {
+        this.toastr.error(response.name, 'Thông báo');
+      }
+    });
+  }
   onCellPrepared(e: any) {
     if (e.rowType === 'data' && e.column.dataField === 'status.name') {
         const status = e.data.status?.name;

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CustomerService } from '../../services/customer.service';
 import { ToastrService } from 'ngx-toastr';
+import { HotelService } from 'src/app/services/hotel.service';
 
 @Component({
   selector: 'app-customers',
@@ -17,16 +18,29 @@ export class CustomersComponent implements OnInit {
   showPageSizeSelector = true;
   showInfo = true;
   showNavButtons = true;
+  hotels: any[] = [];  // Danh sách khách sạn cho dropdown
 
   constructor(
     private toastr: ToastrService,
     private customerService: CustomerService,
+    private hotelService: HotelService,
+
   ) { }
 
   ngOnInit(): void {
     this.loadCustomers();
-  }
+    this.loadHotel();  // Load hotels cho dropdown
 
+  }
+loadHotel() {
+    this.hotelService.getHotels().subscribe(response => {
+      if (response.code === 200) {
+        this.hotels = response.data;
+      } else {
+        this.toastr.error(response.name, 'Thông báo');
+      }
+    });
+  }
   loadCustomers() {
     this.customerService.getCustomers().subscribe(response => {
       if (response.code === 200) {

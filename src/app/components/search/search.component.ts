@@ -11,11 +11,12 @@ import { ToastrService } from 'ngx-toastr';  // Import Toastr
 
 export class SearchComponent {
   bookingId: number | null = null;  // Biến để nhận BookingId từ URL
-  checkIn: string = new Date().toISOString().split('T')[0];  // Default hôm nay
-  checkOut: string = new Date(Date.now() + 86400000).toISOString().split('T')[0];  // Default mai
+  //checkIn: string = new Date().toISOString().split('T')[0];  // Default hôm nay
+  //checkOut: string = new Date(Date.now() + 86400000).toISOString().split('T')[0];  // Default mai
   rooms: any[] = [];
   selectedRooms: any[] = [];
-
+  checkIn: string | number | Date = new Date();                    // hôm nay
+  checkOut: string | number | Date = new Date(Date.now() + 86400000); // ngày mai
   constructor(
     private searchService: SearchService, 
     private router: Router,
@@ -33,7 +34,9 @@ export class SearchComponent {
       this.toastr.error('Vui lòng chọn ngày hợp lệ', 'Thông báo');
       return;
     }
-    this.searchService.searchAvailableRooms(this.checkIn, this.checkOut).subscribe(response => {
+    const checkInStr = this.formatDate(this.checkIn);
+    const checkOutStr = this.formatDate(this.checkOut);
+    this.searchService.searchAvailableRooms(checkInStr, checkOutStr).subscribe(response => {
       if (response.code === 200) {
         this.rooms = response.data;
         if (!response.data || (Array.isArray(response.data) && response.data.length === 0)) {
@@ -46,7 +49,21 @@ export class SearchComponent {
       }
     });
   }
+  private formatDate(d: any): string {
+    if (!d) throw new Error("Invalid date");
 
+    // yyyy-MM-dd
+    if (typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d)) return d;
+
+    // dd/MM/yyyy → yyyy-MM-dd
+    if (typeof d === 'string' && d.includes('/')) {
+      const [day, month, year] = d.split('/');
+      return `${year}-${month}-${day}`;
+    }
+
+    const date = new Date(d);
+    return date.toISOString().split('T')[0];
+  }
   onSelectionChanged(event: any) {
     this.selectedRooms = event.selectedRowsData;
   }
@@ -56,6 +73,8 @@ export class SearchComponent {
       this.toastr.warning('Vui lòng chọn ít nhất một phòng', 'Cảnh báo');
       return;
     }
+    const checkInStr = this.formatDate(this.checkIn);
+    const checkOutStr = this.formatDate(this.checkOut);
     const state = {
       selectedRooms: this.selectedRooms.map(room => ({
         roomId: room.roomId,
@@ -65,8 +84,8 @@ export class SearchComponent {
         subtotal: 0,
         quantity: room.quantity
       })),
-      checkIn: this.checkIn,
-      checkOut: this.checkOut
+      checkIn: checkInStr,
+      checkOut: checkOutStr
     };
     // Lưu vào localStorage để persist qua reload
     localStorage.setItem('bookingState', JSON.stringify(state));

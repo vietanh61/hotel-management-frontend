@@ -44,10 +44,29 @@
             >
             
             <dxi-column dataField="id" caption="ID" [allowEditing]="false"></dxi-column>
+            <dxi-column dataField="hotelId" caption="Khách sạn">
+                <dxo-lookup
+                    [dataSource]="hotels"
+                    valueExpr="id"
+                    displayExpr="name">
+                </dxo-lookup>
+            </dxi-column>
             <dxi-column dataField="confirmationNo" caption="Mã đặt phòng" [allowEditing]="false"></dxi-column>
             <dxi-column dataField="customer.fullName" caption="Khách hàng" [allowEditing]="false"></dxi-column>
-            <dxi-column dataField="checkIn" caption="Check-in" [dataType]="'date'" [allowEditing]="false"></dxi-column>
-            <dxi-column dataField="checkOut" caption="Check-out" [dataType]="'date'" [allowEditing]="false"></dxi-column>
+            <dxi-column 
+              dataField="checkIn" 
+              caption="Check-in" 
+              dataType="date" 
+              format="dd/MM/yyyy" 
+              [allowEditing]="false"
+            ></dxi-column>
+            <dxi-column 
+              dataField="checkOut" 
+              caption="Check-out" 
+              dataType="date" 
+              format="dd/MM/yyyy" 
+              [allowEditing]="false"
+            ></dxi-column>
             <dxi-column dataField="totalPrice" caption="Tổng tiền" [allowEditing]="false" format='#,##0'></dxi-column>
             <dxi-column dataField="status.name" caption="Trạng thái" [allowEditing]="false"></dxi-column>
             <dxi-column caption="Hành động" cellTemplate="actionTemplate" [allowEditing]="false"></dxi-column>
@@ -59,7 +78,7 @@
             <dxo-selection mode="single"></dxo-selection>
             <dxo-filter-row [visible]="true"></dxo-filter-row>
             <dxo-scrolling rowRenderingMode="virtual"> </dxo-scrolling>
-            <dxo-paging [pageSize]="10"> </dxo-paging>
+            <dxo-paging [pageSize]="100"> </dxo-paging>
             <dxo-pager
               [visible]="true"
               [showPageSizeSelector]="showPageSizeSelector"

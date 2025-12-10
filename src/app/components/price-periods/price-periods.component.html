@@ -67,6 +67,7 @@
                         dataField="startDate" 
                         caption="Bắt đầu" 
                         dataType="date"
+                        format="dd/MM/yyyy"
                         [editorOptions]="{ 
                             type: 'date', 
                             displayFormat: 'dd/MM/yyyy' 
@@ -77,6 +78,7 @@
                         dataField="endDate" 
                         caption="Kết thúc" 
                         dataType="date"
+                        format="dd/MM/yyyy"
                         [editorOptions]="{ 
                             type: 'date', 
                             displayFormat: 'dd/MM/yyyy' 
@@ -89,7 +91,7 @@
                         format='#,##0'
                         [editCellTemplate]="priceEditor">
                     </dxi-column>
-
+                  <dxo-filter-row [visible]="true"></dxo-filter-row>
                 </dx-data-grid>
               </div>
               <!-- /.card-body -->

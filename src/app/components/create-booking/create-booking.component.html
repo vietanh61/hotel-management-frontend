@@ -65,11 +65,21 @@
                 </div>
                 <div class="col-md-6">
                   <label>Check-in</label>
-                  <input type="date" class="form-control mb-2" [(ngModel)]="booking.checkIn" name="checkIn">
+                  <!-- <input type="date" class="form-control mb-2" [(ngModel)]="booking.checkIn" name="checkIn" format="dd/MM/yyyy"> -->
+                   <dx-date-box
+                    [(value)]="booking.checkIn"
+                    type="date"
+                    displayFormat="dd/MM/yyyy">
+                  </dx-date-box>
                 </div>
                 <div class="col-md-6">
                   <label>Check-out</label>
-                  <input type="date" class="form-control mb-2" [(ngModel)]="booking.checkOut" name="checkOut">
+                  <!-- <input type="date" class="form-control mb-2" [(ngModel)]="booking.checkOut" name="checkOut" format="dd/MM/yyyy"> -->
+                   <dx-date-box
+                    [(value)]="booking.checkOut"
+                    type="date"
+                    displayFormat="dd/MM/yyyy">
+                  </dx-date-box>
                 </div>
                 <div class="col-md-6">
                   <label>Tổng tiền</label>

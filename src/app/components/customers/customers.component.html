@@ -48,6 +48,13 @@
                 [allowDeleting]="true"
                 [allowAdding]="true">
             </dxo-editing>
+            <dxi-column dataField="hotelId" caption="Khách sạn">
+                <dxo-lookup
+                    [dataSource]="hotels"
+                    valueExpr="id"
+                    displayExpr="name">
+                </dxo-lookup>
+            </dxi-column>
             <dxi-column dataField="fullName" caption="Khách hàng" ></dxi-column>
             <dxi-column dataField="email" caption="Email" ></dxi-column>
             <dxi-column dataField="phone" caption="Số điện thoại"></dxi-column>
