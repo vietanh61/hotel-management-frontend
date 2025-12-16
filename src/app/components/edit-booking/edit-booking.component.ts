@@ -30,7 +30,7 @@ interface BookingNavigationState {
 })
 export class EditBookingComponent implements OnInit {
   bookingId: number | null = null;
-  booking: any = { checkIn: '', checkOut: '', totalPrice: 0, notes: '' };
+  booking: any = { checkIn: null as Date | null, checkOut: null as Date | null, totalPrice: 0, notes: '' };
   customerInfo: any = { fullName: '', email: '', phone: '', address: '', idNumber: '', notes: '' };  // Thông tin khách editable
   details: any[] = [];  // Thêm quantity default 1
   extras: any[] = [];  // List extras
@@ -49,8 +49,10 @@ export class EditBookingComponent implements OnInit {
 
   // Biến cho modal search phòng
   showRoomSearchModal: boolean = false;
-  roomCheckIn: string = '';
-  roomCheckOut: string = '';
+  // modal search phòng
+  roomCheckIn: Date | null = null;
+  roomCheckOut: Date | null = null;
+  
   availableRooms: any[] = [];
   selectedNewRooms: any[] = [];
 
@@ -67,24 +69,38 @@ export class EditBookingComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // Lấy dữ liệu từ navigation state (nếu có)
-    const navigation = this.router.getCurrentNavigation();
-    const state = navigation?.extras.state as { selectedRooms: any[], checkIn: string, checkOut: string } | undefined;
-    let bookingState = state || null;
-
     this.bookingId = +this.route.snapshot.queryParamMap.get('bookingId')!;
-    if (this.bookingId) {
-      this.loadBookingDetails(this.bookingId);
-      this.confirmationNo = this.booking.confirmationNo;
-      // Sau khi load xong dữ liệu từ API, mới xử lý thêm phòng từ state/localStorage
-      const navigation = this.router.getCurrentNavigation();
-      const state = navigation?.extras.state as { selectedRooms: any[], checkIn: string, checkOut: string } | undefined;
-      this.loadBookingDetailsState(state);  // Gọi hàm add phòng mới ở đây
-    } 
-    
+
     this.loadPaymentMethods();
     this.loadBookingStatuses();
-    this.loadExtras();  // Load extras từ API
+    this.loadExtras();
+
+    if (this.bookingId) {
+      this.loadBookingDetails(this.bookingId); // trong này sẽ gọi loadBookingDetailsState luôn
+    }
+
+    
+    // // Lấy dữ liệu từ navigation state (nếu có)
+    
+    // const navigation = this.router.getCurrentNavigation();
+    // const state = navigation?.extras.state as { selectedRooms: any[], checkIn: string, checkOut: string } | undefined;
+    // let bookingState = state || null;
+
+    // this.bookingId = +this.route.snapshot.queryParamMap.get('bookingId')!;
+    // if (this.bookingId) {
+    //   this.loadBookingDetails(this.bookingId);
+    //   this.confirmationNo = this.booking.confirmationNo;
+    //   // Sau khi load xong dữ liệu từ API, mới xử lý thêm phòng từ state/localStorage
+    //   const navigation = this.router.getCurrentNavigation();
+    //   const state = navigation?.extras.state as { selectedRooms: any[], checkIn: string, checkOut: string } | undefined;
+    //   this.loadBookingDetailsState(state);  // Gọi hàm add phòng mới ở đây
+    // } 
+    // // const checkIn  = new Date(this.booking.checkIn);
+    // // const checkOut = new Date(this.booking.checkOut);
+
+    // this.loadPaymentMethods();
+    // this.loadBookingStatuses();
+    // this.loadExtras();  // Load extras từ API
     
   }
   loadExtras() {
@@ -254,7 +270,9 @@ export class EditBookingComponent implements OnInit {
   }
 
   searchRooms() {
-    this.searchService.searchAvailableRooms(this.roomCheckIn, this.roomCheckOut).subscribe(response => {
+    const checkInStr = this.formatDate(this.roomCheckIn);
+    const checkOutStr = this.formatDate(this.roomCheckOut);
+    this.searchService.searchAvailableRooms(checkInStr, checkOutStr).subscribe(response => {
       if (response.code === 200) {
         this.availableRooms = response.data;
       } else {
@@ -270,6 +288,8 @@ export class EditBookingComponent implements OnInit {
       this.toastr.warning('Vui lòng chọn phòng', 'Cảnh báo');
       return;
     }
+    const checkInStr = this.formatDate(this.roomCheckIn);
+    const checkOutStr = this.formatDate(this.roomCheckOut);
 
     const newDetails = this.selectedNewRooms.map(room => ({
       roomId: room.roomId,
@@ -277,7 +297,8 @@ export class EditBookingComponent implements OnInit {
       categoryName: room.categoryName,
       pricePerNight: room.pricePerNight,
       quantity: 1,
-      subtotal: this.calculateSubtotal(room.pricePerNight, this.roomCheckIn, this.roomCheckOut, 1)
+      
+      subtotal: this.calculateSubtotal(room.pricePerNight, checkInStr, checkOutStr, 1)
     }));
 
     this.details = [...this.details, ...newDetails];
@@ -353,7 +374,15 @@ export class EditBookingComponent implements OnInit {
   proceedWithBooking(customerId: number, bookingId: number|null) {
     this.booking.customerId = customerId;
     this.booking.id = bookingId;
-    const payload = { booking: this.booking, details: this.details, extras: this.extras };
+    const payload = { 
+      booking: 
+      {
+        ... this.booking,
+        checkIn: this.toDateOnlyString(this.booking.checkIn),   // đã là yyyy-MM-dd
+        checkOut: this.toDateOnlyString(this.booking.checkOut)  // đã là yyyy-MM-dd
+      }, 
+      details: this.details, 
+      extras: this.extras };
     this.bookingService.editBookingWithDetails(payload).subscribe({
       next: (response: any) => {
       this.isLoading = false;  // Tắt loading
@@ -394,7 +423,8 @@ export class EditBookingComponent implements OnInit {
 
   loadBookingDetailsState(state: { selectedRooms: any[], checkIn: string, checkOut: string } | undefined) {
     let bookingState = state;
-
+    const checkInStr = this.formatDate(bookingState?.checkIn);
+    const checkOutStr = this.formatDate(bookingState?.checkOut);
     // Nếu không có state, đọc từ localStorage
     if (!bookingState) {
       const storedState = localStorage.getItem('bookingState');
@@ -418,7 +448,7 @@ export class EditBookingComponent implements OnInit {
     this.details = [...this.details, ...newDetails];
 
     // Xóa state sau khi dùng
-    //localStorage.removeItem('bookingState');
+    localStorage.removeItem('bookingState');
 
     // Tính lại tổng tiền
     this.calculateTotal();
@@ -428,29 +458,40 @@ export class EditBookingComponent implements OnInit {
   }
   loadBookingDetails(id: number) {
     this.bookingService.getBooking(id).subscribe(response => {
-
       if (response.code === 404) {
-        this.toastr.error("Không tim thấy booking nào", 'Lỗi');
+        this.toastr.error("Không tìm thấy booking nào", 'Lỗi');
         return;
       }
+
       if (response.code === 200) {
         this.booking = response.data;
+
+        // CHỐT: dùng Date cho dx-date-box
+        this.booking.checkIn = this.toDate(response.data.checkIn);
+        this.booking.checkOut = this.toDate(response.data.checkOut);
+
         this.customerInfo = response.data.customer;
         this.extras = response.data.bookingExtras;
+
         this.details = response.data.bookingDetails.map((detail: any) => ({
-          roomId :  detail.roomId,
+          roomId: detail.roomId,
           roomNumber: detail.room.roomNumber,
           categoryName: detail.room.category.name,
           pricePerNight: detail.pricePerNight,
-          quantity: 1,  // Giả định, adjust nếu có quantity
+          quantity: 1,
           subtotal: detail.subtotal
         }));
 
         this.calculateTotal();
-      } 
-      else {
-        this.toastr.error(response.name, 'Lỗi');
+
+        // GỌI add phòng từ state/localStorage SAU KHI load xong booking
+        const nav = this.router.getCurrentNavigation();
+        const state = nav?.extras.state as { selectedRooms: any[], checkIn: string, checkOut: string } | undefined;
+        this.loadBookingDetailsState(state);
+        return;
       }
+
+      this.toastr.error(response.name, 'Lỗi');
     });
   }
 
@@ -472,5 +513,45 @@ export class EditBookingComponent implements OnInit {
         this.toastr.error(response.name, 'Lỗi');
       }
     });
+  }
+  private formatDate(d: any): string {
+    if (!d) return '';
+
+    // yyyy-MM-dd
+    if (typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d)) return d;
+
+    // dd/MM/yyyy → yyyy-MM-dd
+    if (typeof d === 'string' && d.includes('/')) {
+      const [day, month, year] = d.split('/');
+      return `${year}-${month.padStart(2,'0')}-${day.padStart(2,'0')}`;
+    }
+
+    const date = new Date(d);
+    if (isNaN(date.getTime())) return '';
+    return date.toISOString().split('T')[0];
+  }
+
+  private toDate(value: any): Date | null {
+    if (!value) return null;
+    if (value instanceof Date) return value;
+
+    // "yyyy-MM-dd"
+    if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
+      const [y, m, d] = value.split('-').map(Number);
+      return new Date(y, m - 1, d);
+    }
+
+    const dt = new Date(value);
+    return isNaN(dt.getTime()) ? null : dt;
+  }
+    private toDateOnlyString(d: any): string {
+    if (!d) return '';
+    const date = new Date(d);
+    if (isNaN(date.getTime())) return '';
+    // lấy theo local date (tránh lệch ngày do UTC)
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
   }
 }

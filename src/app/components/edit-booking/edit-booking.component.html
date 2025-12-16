@@ -224,11 +224,21 @@
                   <div class="row">
                     <div class="col-md-6">
                       <label>Check-in</label>
-                      <input type="date" [(ngModel)]="roomCheckIn" class="form-control" [readOnly]="true">
+                      <dx-date-box
+                        [(value)]="booking.checkIn"
+                        type="date"
+                        displayFormat="dd/MM/yyyy"
+                      >
+                      </dx-date-box>
                     </div>
                     <div class="col-md-6">
                       <label>Check-out</label>
-                      <input type="date" [(ngModel)]="roomCheckOut" class="form-control" [readOnly]="true">
+                      <dx-date-box
+                        [(value)]="booking.checkOut"
+                        type="date"
+                        displayFormat="dd/MM/yyyy"
+                      >
+                      </dx-date-box>
                     </div>
                   </div>
                   <button class="btn btn-primary mt-2" (click)="searchRooms()">Tìm</button>

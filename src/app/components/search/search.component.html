@@ -2,12 +2,12 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1>Tìm Phòng</h1>
+        <h1>Đặt Phòng</h1>
       </div>
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
           <li class="breadcrumb-item"><a href="#">Home</a></li>
-          <li class="breadcrumb-item active">Tìm Phòng</li>
+          <li class="breadcrumb-item active">Đặt Phòng</li>
         </ol>
       </div>
     </div>
@@ -50,7 +50,8 @@
             [showBorders]="true"
             [columnAutoWidth]="true"
             (onSelectionChanged)="onSelectionChanged($event)">
-            <dxo-selection mode="multiple"></dxo-selection> <!-- Chọn nhiều -->
+            <dxo-selection mode="multiple" deferred="true" showCheckBoxesMode="always"></dxo-selection> <!-- Chọn nhiều -->
+            <dxo-filter-row visible ="true"></dxo-filter-row>
             <dxi-column type="selection"></dxi-column> <!-- Checkbox -->
             <dxi-column dataField="roomNumber" caption="Phòng"></dxi-column>
             <dxi-column dataField="categoryName" caption="Hạng phòng"></dxi-column>
@@ -58,7 +59,7 @@
             <dxi-column dataField="status" caption="Trạng thái"></dxi-column>
           </dx-data-grid>
           <button class="btn btn-success mt-2" (click)="proceedToBooking()" [disabled]="selectedRooms.length === 0">Đặt phòng đã chọn</button>
-
+          <p><span class="info sm"><i><b>(*)</b> Bấm Tìm kiếm và chọn 1 hoặc nhiều phòng để đặt</i></span></p>
         </div>
       </div>
     </div>
